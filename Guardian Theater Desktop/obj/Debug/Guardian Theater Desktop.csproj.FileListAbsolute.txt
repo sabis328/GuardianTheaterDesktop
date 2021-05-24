@@ -1,7 +1,6 @@
 F:\Coding Projects\Guardian Theater Desktop\bin\Debug\Guardian Theater Desktop.exe.config
 F:\Coding Projects\Guardian Theater Desktop\bin\Debug\Guardian Theater Desktop.exe
 F:\Coding Projects\Guardian Theater Desktop\bin\Debug\Guardian Theater Desktop.pdb
-F:\Coding Projects\Guardian Theater Desktop\obj\Debug\Guardian Theater Desktop.csprojAssemblyReference.cache
 F:\Coding Projects\Guardian Theater Desktop\obj\Debug\Guardian_Theater_Desktop.Form1.resources
 F:\Coding Projects\Guardian Theater Desktop\obj\Debug\Guardian_Theater_Desktop.Properties.Resources.resources
 F:\Coding Projects\Guardian Theater Desktop\obj\Debug\Guardian Theater Desktop.csproj.GenerateResource.cache

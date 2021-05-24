@@ -7,6 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Net;
+using System.IO;
+using System.Diagnostics;
 
 namespace Guardian_Theater_Desktop
 {
@@ -15,6 +18,8 @@ namespace Guardian_Theater_Desktop
         public Form1()
         {
             InitializeComponent();
+
+            Task.Run(() => AutoUpdate());
             apiClient = new BungieCrawler();
             apiClient._APIKEY = "9efe9b8eba3042afb081121d447fd981";
             apiClient.CrawlerEvent += ApiClient_CrawlerEvent;
@@ -206,7 +211,69 @@ namespace Guardian_Theater_Desktop
             UpdateStatusBar(0, 0, 0, "Idle");
         }
 
+        public void AutoUpdate()
+        {
+            //https://raw.githubusercontent.com/sabis328/GuardianTheaterDesktop/main/Guardian%20Theater%20Desktop/Properties/AssemblyInfo.cs
+            //https://github.com/sabis328/GuardianTheaterDesktop/blob/main/Guardian%20Theater%20Desktop/bin/Debug/Guardian%20Theater%20Desktop.exe?raw=true
 
+            HttpWebRequest client = (HttpWebRequest)WebRequest.Create("https://raw.githubusercontent.com/sabis328/GuardianTheaterDesktop/main/Guardian%20Theater%20Desktop/Properties/AssemblyInfo.cs");
+            string LatestVerion;
+            using (HttpWebResponse response = (HttpWebResponse)client.GetResponse())
+            {
+                string text = new StreamReader(response.GetResponseStream()).ReadToEnd();
+                System.Diagnostics.Debug.Print(text);
+                int start = 0;
+                int end = 0;
+
+                //AssemblyFileVersion("
+
+                string fileVersionSearch = "AssemblyFileVersion(\"";
+                start = text.IndexOf(fileVersionSearch, end) + fileVersionSearch.Length;
+                end = text.IndexOf("\"", start);
+                LatestVerion = text.Substring(start, end - start);
+            }
+
+            if (Application.ProductVersion != LatestVerion)
+            {
+                UpdateGuardianClient();
+            }
+        }
+
+        private void UpdateGuardianClient()
+        {
+
+            if (InvokeRequired)
+            {
+                this.BeginInvoke((MethodInvoker)delegate
+                { UpdateGuardianClient(); });
+                return;
+            }
+            UpdateStatusBar(0, 0, 0, "Updating client application");
+            System.Diagnostics.Debug.Print("updating application");
+            WebClient Downloader = new WebClient();
+
+            byte[] filebuffer = Downloader.DownloadData("https://github.com/sabis328/GuardianTheaterDesktop/blob/main/Guardian%20Theater%20Desktop/bin/Debug/Guardian%20Theater%20Desktop.exe?raw=true");
+            var appLoc = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            string CurrentPath = Path.GetFileName(appLoc);
+            string CurrentPathTrimmed = Path.Combine(Path.GetDirectoryName(appLoc), Path.GetFileNameWithoutExtension(appLoc));
+
+            File.WriteAllBytes(CurrentPathTrimmed + "Update.exe", filebuffer);
+
+            using (var BatchUpdater = new StreamWriter(File.Create(CurrentPathTrimmed + "Update.bat")))
+            {
+                BatchUpdater.WriteLine("@ECHO OFF");
+                BatchUpdater.WriteLine("TIMEOUT /t 1 /nobreak > NUL");
+                BatchUpdater.WriteLine("TASKKILL /IM \"{0}\" > NUL", CurrentPath);
+                BatchUpdater.WriteLine("MOVE \"{0}\" \"{1}\"", CurrentPathTrimmed + "Update.exe", appLoc);
+                BatchUpdater.WriteLine("DEL \"%~f0\" & START \"\" /B \"{0}\"", appLoc);
+            }
+
+            ProcessStartInfo startBatch = new ProcessStartInfo(CurrentPathTrimmed + "Update.bat");
+            startBatch.WorkingDirectory = Path.GetDirectoryName(appLoc);
+            Process.Start(startBatch);
+
+            Environment.Exit(0);
+        }
         private void DisableInput()
         {
             if (InvokeRequired)
