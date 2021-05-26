@@ -405,7 +405,7 @@ namespace Guardian_Theater_Desktop
 
         private void treeviewStreamList_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            if (e.Node.Tag != null)
+            if (e.Node.Tag != null && e.Node.Tag.GetType() == typeof(string))
             {
                 Clipboard.SetText((string)e.Node.Tag);
                 e.Node.Expand();

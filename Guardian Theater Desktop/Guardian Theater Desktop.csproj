@@ -70,7 +70,6 @@
     <Compile Include="Sub Forms\carnageReportsForm.Designer.cs">
       <DependentUpon>carnageReportsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Trash Classes\BungieCrawler.cs" />
     <Compile Include="Sub Forms\guardianSearchForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -83,7 +82,6 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Trash Classes\GuardianCacher.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Client Classes\TheaterClient.cs" />

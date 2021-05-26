@@ -102,6 +102,7 @@ namespace Guardian_Theater_Desktop
         public MainForm()
         {
             InitializeComponent();
+            this.BringToFront();
             Task.Run(() => AutoUpdate());
 
             ReportCount = (int)numericUpDown1.Value;

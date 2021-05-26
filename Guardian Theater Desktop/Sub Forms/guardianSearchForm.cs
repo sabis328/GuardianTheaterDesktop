@@ -94,7 +94,7 @@ namespace Guardian_Theater_Desktop
         }
         private void ShowAccounts(List<Guardian> FoundUsers)
         {
-            if(InvokeRequired)
+            if (InvokeRequired)
             {
                 this.BeginInvoke((MethodInvoker)delegate
                 {
@@ -103,13 +103,24 @@ namespace Guardian_Theater_Desktop
                 return;
             }
             label2.Text = "Found " + FoundUsers.Count + " users for " + textBox1.Text;
-            foreach(Guardian g in FoundUsers)
+            foreach (Guardian g in FoundUsers)
             {
                 ListViewItem gItem = new ListViewItem();
                 gItem.Text = g.MainDisplayName;
                 gItem.Tag = g;
                 gItem.SubItems.Add(g.MainType.ToString());
                 listView1.Items.Add(gItem);
+            }
+
+            if (FoundUsers.Count == 1)
+            {
+                IsBusy = true;
+                label1.Text = "Loading player information";
+                label2.Text = "Loading detailed player information";
+                parent_form.HideCharacterSubmenu();
+                treeView1.Nodes.Clear();
+                Guardian playerload = FoundUsers[0];
+                Task.Run(() => cli.LoadCharacterEntries(playerload));
             }
         }
 

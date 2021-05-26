@@ -81,7 +81,7 @@ namespace Guardian_Theater_Desktop
                         _response.Close();
                     }
                     List<Guardian> foundPlayers = new List<Guardian>();
-
+                    List<string> compareplayerIDs = new List<string>();
                     List<string> foundPlayerMeta = new List<string>();
 
                     int start = 0;
@@ -113,7 +113,12 @@ namespace Guardian_Theater_Desktop
 
                         Guardian playerAccount = new Guardian();
                         playerAccount.ProcessPlayerInformation(player);
-                        foundPlayers.Add(playerAccount);
+                        if (!compareplayerIDs.Contains(playerAccount.MainAccountIdentifier))
+                        {
+                            compareplayerIDs.Add(playerAccount.MainAccountIdentifier);
+
+                            foundPlayers.Add(playerAccount);
+                        }
                     }
 
                     _TheaterClientEvent?.Invoke(foundPlayers, ClientEventType.SearchComplete);
@@ -352,7 +357,7 @@ namespace Guardian_Theater_Desktop
                     Matches.Add(responseBody.Substring(start, end - start));
                 }
 
-                List<ActivityReport> CarnageReports = new List<ActivityReport>();
+                //List<CarnageReport> CarnageReports = new List<CarnageReport>();
 
                 foreach (string matchID in Matches)
                 {
