@@ -19,14 +19,30 @@ namespace Guardian_Theater_Desktop
             parent_form = parent;
             
             cli = new TheaterClient();
-            cli._BungieApiKey = "9efe9b8eba3042afb081121d447fd981";
+            cli._BungieApiKey = Properties.Settings.Default.BungieKey;
             cli._TheaterClientEvent += Cli__TheaterClientEvent;
         }
         TheaterClient cli;
+
+
+        public void Updatepaint()
+        {
+            panel2.BackColor = Properties.Settings.Default.HeaderFooterColor;
+        }
+
+        private bool IsBusy = false;
         private void button1_Click(object sender, EventArgs e)
         {
-            parent_form.UpdateSelectedUser(null);
-            Task.Run(() => cli.SearchBungieAccounts(textBox1.Text, Guardian.BungieAccount.AccountType.Ignore));
+            if (textBox1.TextLength > 0)
+            {
+                if (!IsBusy)
+                {
+                    IsBusy = true;
+                    parent_form.UpdateSelectedUser(null);
+                    label2.Text = "Searching for user : " + textBox1.Text;
+                    Task.Run(() => cli.SearchBungieAccounts(textBox1.Text, Guardian.BungieAccount.AccountType.Ignore));
+                }
+            }
         }
 
         private void Cli__TheaterClientEvent(object sender, TheaterClient.ClientEventType e)
@@ -34,12 +50,16 @@ namespace Guardian_Theater_Desktop
             switch (e)
             {
                 case TheaterClient.ClientEventType.SearchComplete:
+                    IsBusy = false;
                     ShowAccounts((List<Guardian>)sender);
                     break;
                 case TheaterClient.ClientEventType.CharactersComplete:
                     ShowDetailedAccount((Guardian)sender);
+                    IsBusy = false;
                     break;
                 default:
+                    IsBusy = false;
+                    
                     break;
             }
         }
@@ -56,6 +76,7 @@ namespace Guardian_Theater_Desktop
                 return;
             }
 
+            label2.Text = "Showing detailed information for " + loadedPlayer.MainDisplayName;
             treeView1.Nodes.Clear();
             label1.Text = loadedPlayer.MainDisplayName + " : infomation";
             TreeNode playerNode = new TreeNode(loadedPlayer.MainDisplayName);
@@ -81,6 +102,7 @@ namespace Guardian_Theater_Desktop
                 });
                 return;
             }
+            label2.Text = "Found " + FoundUsers.Count + " users for " + textBox1.Text;
             foreach(Guardian g in FoundUsers)
             {
                 ListViewItem gItem = new ListViewItem();
@@ -93,11 +115,25 @@ namespace Guardian_Theater_Desktop
 
         private void listView1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            label1.Text = "Loading player information";
-            parent_form.HideCharacterSubmenu();
-            treeView1.Nodes.Clear();
-            Guardian playerload = (Guardian)listView1.SelectedItems[0].Tag;
-            Task.Run(() => cli.LoadCharacterEntries(playerload));
+            if (!IsBusy)
+            {
+                IsBusy = true;
+                label1.Text = "Loading player information";
+                label2.Text = "Loading detailed player information";
+                parent_form.HideCharacterSubmenu();
+                treeView1.Nodes.Clear();
+                Guardian playerload = (Guardian)listView1.SelectedItems[0].Tag;
+                Task.Run(() => cli.LoadCharacterEntries(playerload));
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if(!IsBusy)
+            {
+                listView1.Items.Clear();
+                label2.Text = "Idle";
+            }
         }
     }
 }

@@ -15,7 +15,7 @@
       <Value Profile="(Default)">81, 0, 122</Value>
     </Setting>
     <Setting Name="SelectedCharacterColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)">219, 232, 0</Value>
+      <Value Profile="(Default)">White</Value>
     </Setting>
     <Setting Name="HeaderFooterColor" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)">81, 0, 122</Value>

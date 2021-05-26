@@ -20,4 +20,3 @@ F:\Coding Projects\Guardian Theater Desktop\obj\Debug\Guardian_Theater_Desktop.g
 F:\Coding Projects\Guardian Theater Desktop\obj\Debug\Guardian_Theater_Desktop.MainForm.resources
 F:\Coding Projects\Guardian Theater Desktop\obj\Debug\Guardian_Theater_Desktop.userSettingsForm.resources
 F:\Coding Projects\Guardian Theater Desktop\obj\Debug\Guardian_Theater_Desktop.carnageReportsForm.resources
-F:\Coding Projects\Guardian Theater Desktop\obj\Debug\Guardian Theater Desktop.csprojAssemblyReference.cache

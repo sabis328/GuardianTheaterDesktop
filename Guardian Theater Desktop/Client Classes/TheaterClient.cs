@@ -661,6 +661,18 @@ namespace Guardian_Theater_Desktop
                 case "1683791010":
                     ActivityTypeID = "Iron Banner";
                     break;
+                case "3076038389":
+                    ActivityTypeID = "Private Match";
+                    break;
+                case "1813752023":
+                    ActivityTypeID = "Patrol";
+                    break;
+                case "1070981430":
+                    ActivityTypeID = "Lost Sector";
+                    break;
+                case "3029388710":
+                    ActivityTypeID = "Nightfall:Legend";
+                    break;
                 case "":
                     ActivityTypeID = "";
                     break;
@@ -788,6 +800,18 @@ namespace Guardian_Theater_Desktop
                     break;
                 case "788769683":
                     ActivitySpaceID = "Jav 4";
+                    break;
+                case "960911914":
+                    ActivitySpaceID = "Jav 4";
+                    break;
+                case "2585183686":
+                    ActivitySpaceID = "Fortress";
+                    break;
+                case "1813752023":
+                    ActivitySpaceID = "Europa";
+                    break;
+                case "1070981430":
+                    ActivitySpaceID = "Perdition:Legend";
                     break;
                 case "":
                     ActivitySpaceID = "";

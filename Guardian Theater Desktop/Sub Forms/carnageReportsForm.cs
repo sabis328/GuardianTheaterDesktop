@@ -402,5 +402,14 @@ namespace Guardian_Theater_Desktop
             }
             progressBar1.Update();
         }
+
+        private void treeviewStreamList_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            if (e.Node.Tag != null)
+            {
+                Clipboard.SetText((string)e.Node.Tag);
+                e.Node.Expand();
+            }
+        }
     }
 }

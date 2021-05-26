@@ -62,6 +62,7 @@ namespace Guardian_Theater_Desktop
             this.treeviewStreamList.Name = "treeviewStreamList";
             this.treeviewStreamList.Size = new System.Drawing.Size(392, 380);
             this.treeviewStreamList.TabIndex = 1;
+            this.treeviewStreamList.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeviewStreamList_NodeMouseDoubleClick);
             // 
             // panel1
             // 

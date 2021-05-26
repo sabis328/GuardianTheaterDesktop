@@ -73,7 +73,7 @@ namespace Guardian_Theater_Desktop.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("219, 232, 0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("White")]
         public global::System.Drawing.Color SelectedCharacterColor {
             get {
                 return ((global::System.Drawing.Color)(this["SelectedCharacterColor"]));

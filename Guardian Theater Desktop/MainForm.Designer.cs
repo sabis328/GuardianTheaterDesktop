@@ -29,6 +29,7 @@ namespace Guardian_Theater_Desktop
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.panel1 = new System.Windows.Forms.Panel();
             this.panelCarnageSettings = new System.Windows.Forms.Panel();
             this.label3 = new System.Windows.Forms.Label();
@@ -43,12 +44,12 @@ namespace Guardian_Theater_Desktop
             this.buttonGuardianSearch = new System.Windows.Forms.Button();
             this.buttonDashboard = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.characterIndicator = new System.Windows.Forms.Panel();
             this.selectedMenuIndicator = new System.Windows.Forms.Panel();
             this.panel5 = new System.Windows.Forms.Panel();
             this.button9 = new System.Windows.Forms.Button();
             this.FormContainerPanel = new System.Windows.Forms.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
-            this.characterIndicator = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.panelCarnageSettings.SuspendLayout();
@@ -265,6 +266,15 @@ namespace Guardian_Theater_Desktop
             this.panel2.Size = new System.Drawing.Size(10, 451);
             this.panel2.TabIndex = 8;
             // 
+            // characterIndicator
+            // 
+            this.characterIndicator.BackColor = System.Drawing.Color.White;
+            this.characterIndicator.Location = new System.Drawing.Point(0, 130);
+            this.characterIndicator.Name = "characterIndicator";
+            this.characterIndicator.Size = new System.Drawing.Size(10, 40);
+            this.characterIndicator.TabIndex = 1;
+            this.characterIndicator.Paint += new System.Windows.Forms.PaintEventHandler(this.characterIndicator_Paint);
+            // 
             // selectedMenuIndicator
             // 
             this.selectedMenuIndicator.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(81)))), ((int)(((byte)(0)))), ((int)(((byte)(122)))));
@@ -275,7 +285,8 @@ namespace Guardian_Theater_Desktop
             // 
             // panel5
             // 
-            this.panel5.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.panel5.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("panel5.BackgroundImage")));
+            this.panel5.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.panel5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel5.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel5.Font = new System.Drawing.Font("Microsoft YaHei", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -310,6 +321,7 @@ namespace Guardian_Theater_Desktop
             this.FormContainerPanel.Name = "FormContainerPanel";
             this.FormContainerPanel.Size = new System.Drawing.Size(748, 570);
             this.FormContainerPanel.TabIndex = 2;
+            this.FormContainerPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.FormContainerPanel_Paint);
             // 
             // panel4
             // 
@@ -324,15 +336,6 @@ namespace Guardian_Theater_Desktop
             this.panel4.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel4_MouseDown);
             this.panel4.MouseMove += new System.Windows.Forms.MouseEventHandler(this.panel4_MouseMove);
             this.panel4.MouseUp += new System.Windows.Forms.MouseEventHandler(this.panel4_MouseUp);
-            // 
-            // characterIndicator
-            // 
-            this.characterIndicator.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(219)))), ((int)(((byte)(232)))), ((int)(((byte)(0)))));
-            this.characterIndicator.Location = new System.Drawing.Point(0, 130);
-            this.characterIndicator.Name = "characterIndicator";
-            this.characterIndicator.Size = new System.Drawing.Size(10, 40);
-            this.characterIndicator.TabIndex = 1;
-            this.characterIndicator.Paint += new System.Windows.Forms.PaintEventHandler(this.characterIndicator_Paint);
             // 
             // label1
             // 
@@ -354,9 +357,10 @@ namespace Guardian_Theater_Desktop
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Form2";
+            this.Text = "Guardian Theater Desktop";
             this.panel1.ResumeLayout(false);
             this.panelCarnageSettings.ResumeLayout(false);
             this.panelCarnageSettings.PerformLayout();

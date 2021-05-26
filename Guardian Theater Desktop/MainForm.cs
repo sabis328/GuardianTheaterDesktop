@@ -96,6 +96,7 @@ namespace Guardian_Theater_Desktop
             selectedMenuIndicator.BackColor = Properties.Settings.Default.MenuIndicatorColor;
             characterIndicator.BackColor = Properties.Settings.Default.SelectedCharacterColor;
             ReportForm.Updatepaint();
+            SearchForm.Updatepaint();
         }
 
         public MainForm()
@@ -371,6 +372,11 @@ namespace Guardian_Theater_Desktop
         }
 
         private void characterIndicator_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void FormContainerPanel_Paint(object sender, PaintEventArgs e)
         {
 
         }
