@@ -59,9 +59,57 @@ namespace Guardian_Theater_Desktop
                 progressBar1.Value = 0;
                 SetStatusMessage("Loading carnage reports", 0, CarnageClient.ReportsToLoad);
 
+                if (Properties.Settings.Default.SaveLastSearch)
+                {
+                    System.Diagnostics.Debug.Print("Setting character to " + user.CharacterEntries[charnum].CharacterIdentifier);
+                    Properties.Settings.Default.MyAccountLastCharacterIdentifier = user.CharacterEntries[charnum].CharacterIdentifier;
+                    Properties.Settings.Default.Save();
+                }
                 Task.Run(() => CarnageClient.LoadCarnageReportList(CurrentCharacter, CurrentGuardian, CarnageClient.ReportsToLoad));
                 IsBusy = true;
             }
+        }
+
+        public void SetFromSavedCharacter(Guardian user, string CharID)
+        {
+
+            if (CharID == "null")
+            {
+                return;
+            }
+            if (!IsBusy)
+            {
+                IsBusy = true;
+                int i = 0;
+                foreach (Guardian.CharacterEntry c in user.CharacterEntries)
+                {
+                    if (c.CharacterIdentifier == CharID)
+                    {
+                        break;
+                    }
+                    i += 1;
+                }
+                System.Diagnostics.Debug.Print(CharID + " = " + i.ToString() + " numbered character");
+                parentForm.SetSelectedCharacter(i);
+                treeviewCarnageList.Nodes.Clear();
+                treeviewStreamList.Nodes.Clear();
+
+                CarnageClient._BungieApiKey = parentForm.BungieKey;
+                CarnageClient._TwitchApiKey = parentForm.TwitchKey;
+                CarnageClient._TwitchApiSecret = parentForm.TwitchAuth;
+
+                CarnageHeader.Text = "Carnage Reports for " + user.MainDisplayName + " | " + user.CharacterEntries[i].CharacterClass.ToString();
+                CurrentGuardian = user;
+                CurrentCharacter = CurrentGuardian.CharacterEntries[i];
+                CarnageClient.PlayerExclusion = user.MainDisplayName;
+                CarnageClient.ReportsToLoad = parentForm.ReportCount;
+                progressBar1.Value = 0;
+                SetStatusMessage("Loading carnage reports", 0, CarnageClient.ReportsToLoad);
+
+                Task.Run(() => CarnageClient.LoadCarnageReportList(CurrentCharacter, CurrentGuardian, CarnageClient.ReportsToLoad));
+                
+            }
+        
         }
         private void CarnageClient__TheaterClientEvent(object sender, TheaterClient.ClientEventType e)
         {

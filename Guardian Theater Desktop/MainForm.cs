@@ -15,6 +15,8 @@ namespace Guardian_Theater_Desktop
 {
     public partial class MainForm : Form
     {
+
+        public Guardian savedGuardian;
         public string BungieKey { get; set; }
         public string TwitchKey { get; set; }
         public string TwitchAuth { get; set; }
@@ -130,6 +132,14 @@ namespace Guardian_Theater_Desktop
             ShowDashboard();
             UpdateFormPaints();
 
+
+            if(Properties.Settings.Default.SaveLastSearch)
+            {
+                if(Properties.Settings.Default.MyAccountDisplayName != "null")
+                {
+                    ShowSearchMenu();
+                }
+            }
             #endregion
 
 
@@ -179,8 +189,22 @@ namespace Guardian_Theater_Desktop
                 DashBoardForm.Visible = false;
             }
 
+           
             ReportForm.SetCharacter((Guardian)buttonCharacter1.Tag, charNum);
             
+        }
+
+        private void ShowReportsFormFromSaved()
+        {
+            if (!ReportForm.Visible)
+            {
+                ReportForm.Visible = true;
+                ReportForm.BringToFront();
+                SearchForm.Visible = false;
+                DashBoardForm.Visible = false;
+            }
+            System.Diagnostics.Debug.Print("Showing reports for saved character : " + Properties.Settings.Default.MyAccountLastCharacterIdentifier);
+            ReportForm.SetFromSavedCharacter(savedGuardian,Properties.Settings.Default.MyAccountLastCharacterIdentifier);
         }
         private void ShowDashboard()
         {
@@ -315,7 +339,28 @@ namespace Guardian_Theater_Desktop
                     }
 
 
-                    ShowCharacterSubMenu();
+                    if (Properties.Settings.Default.SaveLastSearch && Properties.Settings.Default.MyAccountLastCharacterIdentifier != "null")
+                    {
+                        System.Diagnostics.Debug.Print("Need to load last reports from saved users");
+                        savedGuardian = selected;
+                        Properties.Settings.Default.MyAccountDisplayName = selected.MainDisplayName;
+                        Properties.Settings.Default.MyAccountMainID = selected.MainAccountIdentifier;
+                        Properties.Settings.Default.MyAccountMainType = selected.MainType.ToString();
+                        Properties.Settings.Default.Save();
+                        ShowReportsFormFromSaved();
+                        ShowCharacterSubMenu();
+                        return;
+                    }
+                    else
+                    {
+                        System.Diagnostics.Debug.Print("Updating selected user");
+                        System.Diagnostics.Debug.Print(Properties.Settings.Default.SaveLastSearch.ToString());
+                        System.Diagnostics.Debug.Print(Properties.Settings.Default.MyAccountDisplayName);
+                        System.Diagnostics.Debug.Print(Properties.Settings.Default.MyAccountMainID);
+                        System.Diagnostics.Debug.Print(Properties.Settings.Default.MyAccountMainType);
+                        System.Diagnostics.Debug.Print(Properties.Settings.Default.MyAccountLastCharacterIdentifier);
+                        ShowCharacterSubMenu();
+                    }
                 }
                
             }

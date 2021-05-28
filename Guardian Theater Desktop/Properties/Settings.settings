@@ -21,10 +21,19 @@
       <Value Profile="(Default)">81, 0, 122</Value>
     </Setting>
     <Setting Name="MyAccountMainID" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">null</Value>
     </Setting>
     <Setting Name="MyAccountMainType" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">null</Value>
+    </Setting>
+    <Setting Name="MyAccountDisplayName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">null</Value>
+    </Setting>
+    <Setting Name="MyAccountLastCharacterIdentifier" Type="System.String" Scope="User">
+      <Value Profile="(Default)">null</Value>
+    </Setting>
+    <Setting Name="SaveLastSearch" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>
 </SettingsFile>

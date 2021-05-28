@@ -21,6 +21,14 @@ namespace Guardian_Theater_Desktop
             cli = new TheaterClient();
             cli._BungieApiKey = Properties.Settings.Default.BungieKey;
             cli._TheaterClientEvent += Cli__TheaterClientEvent;
+
+            if(Properties.Settings.Default.SaveLastSearch)
+            {
+                if(Properties.Settings.Default.MyAccountMainID != "null")
+                {
+                    LoadFromSettings();
+                }
+            }
         }
         TheaterClient cli;
 
@@ -37,11 +45,49 @@ namespace Guardian_Theater_Desktop
             {
                 if (!IsBusy)
                 {
+                    if (Properties.Settings.Default.SaveLastSearch)
+                    {
+                        Properties.Settings.Default.MyAccountDisplayName = "null";
+                        Properties.Settings.Default.MyAccountMainType = "null";
+                        Properties.Settings.Default.MyAccountMainID = "null";
+                        Properties.Settings.Default.MyAccountLastCharacterIdentifier = "null";
+                        Properties.Settings.Default.Save();
+                    }
+
                     IsBusy = true;
                     parent_form.UpdateSelectedUser(null);
                     label2.Text = "Searching for user : " + textBox1.Text;
                     Task.Run(() => cli.SearchBungieAccounts(textBox1.Text, Guardian.BungieAccount.AccountType.Ignore));
                 }
+            }
+        }
+
+        public void LoadFromSettings()
+        {
+            if(!IsBusy)
+            {
+                System.Diagnostics.Debug.Print("Loading from settings : ");
+                System.Diagnostics.Debug.Print(Properties.Settings.Default.MyAccountDisplayName);
+                System.Diagnostics.Debug.Print(Properties.Settings.Default.MyAccountMainType.ToString());
+                System.Diagnostics.Debug.Print(Properties.Settings.Default.MyAccountMainID);
+                System.Diagnostics.Debug.Print(Properties.Settings.Default.MyAccountLastCharacterIdentifier);
+
+                IsBusy = true;
+                textBox1.Text = Properties.Settings.Default.MyAccountDisplayName;
+                parent_form.UpdateSelectedUser(null);
+                label2.Text = "Loading for user : " + textBox1.Text;
+                Guardian SavedUser = new Guardian();
+                SavedUser.MainDisplayName = Properties.Settings.Default.MyAccountDisplayName;
+                SavedUser.MainAccountIdentifier = Properties.Settings.Default.MyAccountMainID;
+                SavedUser.MainType = cli.AccountTypeFromString(Properties.Settings.Default.MyAccountMainType);
+
+                ListViewItem gItem = new ListViewItem();
+                gItem.Text = SavedUser.MainDisplayName;
+                gItem.Tag = SavedUser;
+                gItem.SubItems.Add(SavedUser.MainType.ToString());
+                listView1.Items.Add(gItem);
+
+                Task.Run(() => cli.LoadCharacterEntries(SavedUser));
             }
         }
 
@@ -88,8 +134,26 @@ namespace Guardian_Theater_Desktop
                 playerNode.Nodes.Add(bacc.DisplayName + " | " + bacc.UserType.ToString());
             }
             playerNode.Expand();
-            treeView1.Nodes.Add(playerNode);
 
+            if (Properties.Settings.Default.SaveLastSearch)
+            {
+                Properties.Settings.Default.MyAccountDisplayName = loadedPlayer.MainDisplayName;
+                Properties.Settings.Default.MyAccountMainType = loadedPlayer.MainType.ToString();
+                Properties.Settings.Default.MyAccountMainID = loadedPlayer.MainAccountIdentifier;
+
+                System.Diagnostics.Debug.Print("Finished loading data : checking for saved char value");
+                System.Diagnostics.Debug.Print(Properties.Settings.Default.MyAccountLastCharacterIdentifier);
+
+                if (Properties.Settings.Default.MyAccountLastCharacterIdentifier == "null")
+                {
+                    Properties.Settings.Default.MyAccountLastCharacterIdentifier = "null";
+                }
+
+                System.Diagnostics.Debug.Print(Properties.Settings.Default.MyAccountLastCharacterIdentifier);
+                Properties.Settings.Default.Save();
+            }
+
+            treeView1.Nodes.Add(playerNode);
             parent_form.UpdateSelectedUser(loadedPlayer);
         }
         private void ShowAccounts(List<Guardian> FoundUsers)

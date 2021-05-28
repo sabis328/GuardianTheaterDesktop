@@ -97,7 +97,7 @@ namespace Guardian_Theater_Desktop.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("null")]
         public string MyAccountMainID {
             get {
                 return ((string)(this["MyAccountMainID"]));
@@ -109,13 +109,49 @@ namespace Guardian_Theater_Desktop.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("null")]
         public string MyAccountMainType {
             get {
                 return ((string)(this["MyAccountMainType"]));
             }
             set {
                 this["MyAccountMainType"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("null")]
+        public string MyAccountDisplayName {
+            get {
+                return ((string)(this["MyAccountDisplayName"]));
+            }
+            set {
+                this["MyAccountDisplayName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("null")]
+        public string MyAccountLastCharacterIdentifier {
+            get {
+                return ((string)(this["MyAccountLastCharacterIdentifier"]));
+            }
+            set {
+                this["MyAccountLastCharacterIdentifier"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SaveLastSearch {
+            get {
+                return ((bool)(this["SaveLastSearch"]));
+            }
+            set {
+                this["SaveLastSearch"] = value;
             }
         }
     }

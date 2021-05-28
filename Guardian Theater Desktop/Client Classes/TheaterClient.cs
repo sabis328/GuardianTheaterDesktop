@@ -58,6 +58,25 @@ namespace Guardian_Theater_Desktop
             }
         }
 
+        public Guardian.BungieAccount.AccountType AccountTypeFromString(string accountType)
+        {
+            switch(accountType)
+            {
+                case "Xbox":
+                    return Guardian.BungieAccount.AccountType.Xbox;
+                case "PSN":
+                    return Guardian.BungieAccount.AccountType.PSN;
+                case "Steam":
+                    return Guardian.BungieAccount.AccountType.Steam;
+                case "BNET":
+                    return Guardian.BungieAccount.AccountType.BNET;
+                case "Ignore":
+                    return Guardian.BungieAccount.AccountType.Ignore;
+                default:
+                    return Guardian.BungieAccount.AccountType.Ignore;
+            }
+        }
+
         public void SearchBungieAccounts(string Username, Guardian.BungieAccount.AccountType UserType)
         {
             if (!InProgress)
@@ -148,6 +167,9 @@ namespace Guardian_Theater_Desktop
                     _client.Method = "GET";
                     _client.Headers.Add("X-API-KEY", _BungieApiKey);
                     _client.KeepAlive = false;
+
+                    System.Diagnostics.Debug.Print("Character request");
+                    System.Diagnostics.Debug.Print(_client.RequestUri.ToString());
 
                     string responseBody;
                     using (HttpWebResponse _response = (HttpWebResponse)_client.GetResponse())

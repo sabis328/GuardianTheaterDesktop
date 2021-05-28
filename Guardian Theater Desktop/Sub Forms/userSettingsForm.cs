@@ -21,6 +21,7 @@ namespace Guardian_Theater_Desktop
         public userSettingsForm(MainForm parent)
         {
             InitializeComponent();
+            checkBox1.Checked = Properties.Settings.Default.SaveLastSearch;
             _parentForm = parent;
             panel1.BackColor = Properties.Settings.Default.MenuIndicatorColor;
             panel2.BackColor = Properties.Settings.Default.SelectedCharacterColor;
@@ -87,6 +88,21 @@ namespace Guardian_Theater_Desktop
             Properties.Settings.Default.HeaderFooterColor = panel3.BackColor;
             Properties.Settings.Default.Save();
             _parentForm.UpdateFormPaints();
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        { 
+           
+            Properties.Settings.Default.SaveLastSearch = checkBox1.Checked;
+            Properties.Settings.Default.Save();
+
+            if(!checkBox1.Checked)
+            {
+                Properties.Settings.Default.MyAccountLastCharacterIdentifier = "null";
+                Properties.Settings.Default.MyAccountMainID = "null";
+                Properties.Settings.Default.MyAccountDisplayName = "null";
+                Properties.Settings.Default.MyAccountMainType = "null";
+            }
         }
     }
 }
