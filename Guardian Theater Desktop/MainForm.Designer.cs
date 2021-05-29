@@ -47,7 +47,7 @@ namespace Guardian_Theater_Desktop
             this.characterIndicator = new System.Windows.Forms.Panel();
             this.selectedMenuIndicator = new System.Windows.Forms.Panel();
             this.panel5 = new System.Windows.Forms.Panel();
-            this.button9 = new System.Windows.Forms.Button();
+            this.buttonExitApplicaiton = new System.Windows.Forms.Button();
             this.FormContainerPanel = new System.Windows.Forms.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
@@ -70,7 +70,7 @@ namespace Guardian_Theater_Desktop
             this.panel1.Controls.Add(this.buttonDashboard);
             this.panel1.Controls.Add(this.panel2);
             this.panel1.Controls.Add(this.panel5);
-            this.panel1.Controls.Add(this.button9);
+            this.panel1.Controls.Add(this.buttonExitApplicaiton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
@@ -295,21 +295,24 @@ namespace Guardian_Theater_Desktop
             this.panel5.Size = new System.Drawing.Size(262, 110);
             this.panel5.TabIndex = 0;
             // 
-            // button9
+            // buttonExitApplicaiton
             // 
-            this.button9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(50)))), ((int)(((byte)(56)))));
-            this.button9.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.button9.FlatAppearance.BorderSize = 0;
-            this.button9.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button9.Font = new System.Drawing.Font("Microsoft YaHei", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button9.ForeColor = System.Drawing.Color.White;
-            this.button9.Location = new System.Drawing.Point(0, 561);
-            this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(262, 45);
-            this.button9.TabIndex = 7;
-            this.button9.Text = "Exit";
-            this.button9.UseVisualStyleBackColor = false;
-            this.button9.Click += new System.EventHandler(this.button9_Click);
+            this.buttonExitApplicaiton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(50)))), ((int)(((byte)(56)))));
+            this.buttonExitApplicaiton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.buttonExitApplicaiton.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.buttonExitApplicaiton.FlatAppearance.BorderSize = 0;
+            this.buttonExitApplicaiton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonExitApplicaiton.Font = new System.Drawing.Font("Microsoft YaHei", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonExitApplicaiton.ForeColor = System.Drawing.Color.White;
+            this.buttonExitApplicaiton.Image = ((System.Drawing.Image)(resources.GetObject("buttonExitApplicaiton.Image")));
+            this.buttonExitApplicaiton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.buttonExitApplicaiton.Location = new System.Drawing.Point(0, 561);
+            this.buttonExitApplicaiton.Name = "buttonExitApplicaiton";
+            this.buttonExitApplicaiton.Size = new System.Drawing.Size(262, 45);
+            this.buttonExitApplicaiton.TabIndex = 7;
+            this.buttonExitApplicaiton.Text = "Exit";
+            this.buttonExitApplicaiton.UseVisualStyleBackColor = false;
+            this.buttonExitApplicaiton.Click += new System.EventHandler(this.button9_Click);
             // 
             // FormContainerPanel
             // 
@@ -391,7 +394,7 @@ namespace Guardian_Theater_Desktop
         private System.Windows.Forms.Button buttonCarnageMenu;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.Button button9;
+        private System.Windows.Forms.Button buttonExitApplicaiton;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel selectedMenuIndicator;
         private System.Windows.Forms.Panel characterIndicator;

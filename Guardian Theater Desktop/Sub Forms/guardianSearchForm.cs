@@ -193,6 +193,14 @@ namespace Guardian_Theater_Desktop
             if (!IsBusy)
             {
                 IsBusy = true;
+                if (Properties.Settings.Default.SaveLastSearch)
+                {
+                    Properties.Settings.Default.MyAccountDisplayName = "null";
+                    Properties.Settings.Default.MyAccountMainType = "null";
+                    Properties.Settings.Default.MyAccountMainID = "null";
+                    Properties.Settings.Default.MyAccountLastCharacterIdentifier = "null";
+                    Properties.Settings.Default.Save();
+                }
                 label1.Text = "Loading player information";
                 label2.Text = "Loading detailed player information";
                 parent_form.HideCharacterSubmenu();

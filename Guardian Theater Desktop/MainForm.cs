@@ -97,6 +97,7 @@ namespace Guardian_Theater_Desktop
             panel4.BackColor = Properties.Settings.Default.HeaderFooterColor;
             selectedMenuIndicator.BackColor = Properties.Settings.Default.MenuIndicatorColor;
             characterIndicator.BackColor = Properties.Settings.Default.SelectedCharacterColor;
+            buttonExitApplicaiton.BackColor = Properties.Settings.Default.HeaderFooterColor;
             ReportForm.Updatepaint();
             SearchForm.Updatepaint();
         }
@@ -106,6 +107,8 @@ namespace Guardian_Theater_Desktop
             InitializeComponent();
             this.BringToFront();
             Task.Run(() => AutoUpdate());
+
+            
 
             ReportCount = (int)numericUpDown1.Value;
             #region Load and hide all child forms
@@ -143,6 +146,7 @@ namespace Guardian_Theater_Desktop
             #endregion
 
 
+            numericUpDown1.Value = Properties.Settings.Default.ReportCounter;
 
         }
         #region Allow moving form without border
@@ -191,6 +195,16 @@ namespace Guardian_Theater_Desktop
 
            
             ReportForm.SetCharacter((Guardian)buttonCharacter1.Tag, charNum);
+
+            if(Properties.Settings.Default.SaveLastSearch)
+            {
+                Guardian g = (Guardian)buttonCharacter1.Tag;
+                Properties.Settings.Default.MyAccountDisplayName = g.MainDisplayName;
+                Properties.Settings.Default.MyAccountMainID = g.MainAccountIdentifier;
+                Properties.Settings.Default.MyAccountMainType = g.MainType.ToString();
+                Properties.Settings.Default.MyAccountLastCharacterIdentifier = g.CharacterEntries[charNum].CharacterIdentifier;
+                Properties.Settings.Default.Save();
+            }
             
         }
 
@@ -353,12 +367,6 @@ namespace Guardian_Theater_Desktop
                     }
                     else
                     {
-                        System.Diagnostics.Debug.Print("Updating selected user");
-                        System.Diagnostics.Debug.Print(Properties.Settings.Default.SaveLastSearch.ToString());
-                        System.Diagnostics.Debug.Print(Properties.Settings.Default.MyAccountDisplayName);
-                        System.Diagnostics.Debug.Print(Properties.Settings.Default.MyAccountMainID);
-                        System.Diagnostics.Debug.Print(Properties.Settings.Default.MyAccountMainType);
-                        System.Diagnostics.Debug.Print(Properties.Settings.Default.MyAccountLastCharacterIdentifier);
                         ShowCharacterSubMenu();
                     }
                 }
@@ -415,6 +423,8 @@ namespace Guardian_Theater_Desktop
         private void numericUpDown1_ValueChanged(object sender, EventArgs e)
         {
             ReportCount = (int)numericUpDown1.Value;
+            Properties.Settings.Default.ReportCounter = (int)numericUpDown1.Value;
+            Properties.Settings.Default.Save();
         }
 
         private void characterIndicator_Paint(object sender, PaintEventArgs e)

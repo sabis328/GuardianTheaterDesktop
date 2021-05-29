@@ -662,7 +662,7 @@ namespace Guardian_Theater_Desktop
                     ActivityTypeID = "Raid";
                     break;
                 case "70223475":
-                    ActivityTypeID = "Presage";
+                    ActivityTypeID = "Patrol";
                     break;
                 case "2936791966":
                     ActivityTypeID = "Lost Sector";
@@ -700,8 +700,23 @@ namespace Guardian_Theater_Desktop
                 case "3029388710":
                     ActivityTypeID = "Nightfall:Legend";
                     break;
-                case "":
-                    ActivityTypeID = "";
+                case "2205920677":
+                    ActivityTypeID = "Empire Hunt";
+                    break;
+                case "135431604":
+                    ActivityTypeID = "Gambit";
+                    break;
+                case "1077850348":
+                    ActivityTypeID = "Dungeon";
+                    break;
+                case "743628305":
+                    ActivityTypeID = "Vangaurd Strikes";
+                    break;
+                case "3029388705":
+                    ActivityTypeID = "Nightfall:Master";
+                    break;
+                case "1655431815":
+                    ActivityTypeID = "Expunge";
                     break;
                 default:
                     ActivityTypeID = "Unkown Game Mode";
@@ -840,8 +855,44 @@ namespace Guardian_Theater_Desktop
                 case "1070981430":
                     ActivitySpaceID = "Perdition:Legend";
                     break;
-                case "":
-                    ActivitySpaceID = "";
+                case "2205920677":
+                    ActivitySpaceID = "The Dark Priestess:Master";
+                    break;
+                case "3029388710":
+                    ActivitySpaceID = "Nessus";
+                    break;
+                case "2505336188":
+                    ActivitySpaceID = "The Dead Cliffs";
+                    break;
+                case "1855216675":
+                    ActivitySpaceID = "New Arcadia";
+                    break;
+                case "1575864965":
+                    ActivitySpaceID = "Deep Six";
+                    break;
+                case "1731870079":
+                    ActivitySpaceID = "Legions Folly";
+                    break;
+                case "1077850348":
+                    ActivitySpaceID = "Prophecy";
+                    break;
+                case "3240321863":
+                    ActivitySpaceID = "Arms Dealer";
+                    break;
+                case "1684420962":
+                    ActivitySpaceID = "The Disgraced";
+                    break;
+                case "3643233460":
+                    ActivitySpaceID = "The Scarlet Keep";
+                    break;
+                case "3029388705":
+                    ActivitySpaceID = "Nessus";
+                        break;
+                case "114977383":
+                    ActivitySpaceID = "Exodus Blue";
+                    break;
+                case "1655431815":
+                    ActivitySpaceID = "Tangled Shore";
                     break;
                 default:
                     ActivitySpaceID = "Unkown Location";

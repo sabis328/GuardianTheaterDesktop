@@ -89,6 +89,12 @@ namespace Guardian_Theater_Desktop
                     }
                     i += 1;
                 }
+
+                if(i == 3)
+                {
+
+                    i = 0;
+                }
                 System.Diagnostics.Debug.Print(CharID + " = " + i.ToString() + " numbered character");
                 parentForm.SetSelectedCharacter(i);
                 treeviewCarnageList.Nodes.Clear();

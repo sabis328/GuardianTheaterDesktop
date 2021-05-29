@@ -154,5 +154,17 @@ namespace Guardian_Theater_Desktop.Properties {
                 this["SaveLastSearch"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        public int ReportCounter {
+            get {
+                return ((int)(this["ReportCounter"]));
+            }
+            set {
+                this["ReportCounter"] = value;
+            }
+        }
     }
 }
