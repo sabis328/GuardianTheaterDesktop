@@ -179,7 +179,23 @@ namespace Guardian_Theater_Desktop
 
                 foreach(Guardian player in PGCR.ActivityPlayers)
                 {
-                    MatchNode.Nodes.Add(player.MainDisplayName);
+                    TreeNode PlayerNode = new TreeNode(player.MainDisplayName);
+                    foreach(Guardian.Weapon wep in player.UsedWeapons)
+                    {
+                        TreeNode wepNode = new TreeNode(wep.WeaponIdentifier);
+                        wepNode.Nodes.Add("Kills : " + wep.WeaponKills);
+                        wepNode.Nodes.Add("Precision Ratio : " + wep.WeaponPrecisionRatio);
+
+                        if(wep.Suspected)
+                        {
+                            wepNode.BackColor = Color.Red;
+                            PlayerNode.BackColor = Color.Red;
+                            MatchNode.BackColor = Color.Red;
+                        }
+                        PlayerNode.Nodes.Add(wepNode);
+                    }
+                    MatchNode.Nodes.Add(PlayerNode);
+
                 }
                 treeviewCarnageList.Nodes.Add(MatchNode);
             }
@@ -201,6 +217,12 @@ namespace Guardian_Theater_Desktop
         //Starts Checking all indepth data for recent players
         private void QueueRecentPlayerList()
         {
+            if(InvokeRequired)
+            {
+                this.BeginInvoke((MethodInvoker)delegate
+               { QueueRecentPlayerList(); });
+                return;
+            }
             if (CarnageClient.RecentPlayers.Count > 0)
             {
                 IsBusy = true;
