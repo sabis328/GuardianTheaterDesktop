@@ -88,7 +88,7 @@ namespace Guardian_Theater_Desktop
                 {
                     string accTypeModifier = ConvertAccountType(UserType);
 
-                    _client = (HttpWebRequest)WebRequest.Create(string.Format(_apiBase + "{0}{1}{2}{3}", "SearchDestinyPlayer/", accTypeModifier, "/", Username));
+                    _client = (HttpWebRequest)WebRequest.Create(string.Format(_apiBase + "{0}{1}{2}{3}", "SearchDestinyPlayer/", accTypeModifier, "/", Uri.EscapeDataString(Username)));
                     _client.Method = "GET";
                     _client.Headers.Add("X-API-KEY", _BungieApiKey);
                     _client.KeepAlive = false;
@@ -152,7 +152,7 @@ namespace Guardian_Theater_Desktop
             }
         }
 
-        public void LoadCharacterEntries(Guardian inputAccount)
+        public void LoadCharacterEntries(Guardian inputAccount, bool fromAlt = true)
         {
             if (!InProgress)
             {
@@ -215,7 +215,11 @@ namespace Guardian_Theater_Desktop
                     }
 
                     InProgress = false;
-                    LoadLinkedAccounts(inputAccount, true);
+                    if (!fromAlt)
+                    {
+                        LoadLinkedAccounts(inputAccount, true);
+                        _TheaterClientEvent?.Invoke(inputAccount, ClientEventType.CharactersComplete);
+                    }
 
                     _TheaterClientEvent?.Invoke(inputAccount, ClientEventType.CharactersComplete);
 
@@ -455,34 +459,29 @@ namespace Guardian_Theater_Desktop
                     matchPlayer.ProcessPlayerInformation(playerMeta);
                     matchPlayers.Add(matchPlayer);
 
-                    try
+                   
+                    int wepstart = matchData.IndexOf("weapons", end);
+                    if (wepstart > 0)
                     {
-                        //SHould Load Json containing all weapons & medals
-                        int wepstart = matchData.IndexOf("weapons", end);
-                        if (wepstart > 0)
+                        int wepend = matchData.IndexOf("destinyUserInfo", wepstart);
+                        if (wepend < 0)
                         {
-                            int wepend = matchData.IndexOf("destinyUserInfo", wepstart);
-                            if (wepend < 0)
-                            {
-                                wepend = matchData.IndexOf("teams", wepstart);
-                            }
-                            string wepData = matchData.Substring(wepstart, wepend - wepstart);
-
-                            //System.Diagnostics.Debug.Print("Weapon string found : " + wepData);
-                            wepstart = 0;
-                            wepend = 0;
-
-                            wepstart = wepData.IndexOf("referenceId", 0);
-                            int Tempwepend = wepData.LastIndexOf("uniqueWeaponKillsPrecisionKills");
-                            wepend = wepData.IndexOf("displayValue", Tempwepend) + 15;
-                            Tempwepend = wepData.IndexOf("\"", wepend);
-
-
-                            string processedWepData = wepData.Substring(wepstart, Tempwepend - wepstart);
-                            matchPlayer.UsedWeapons = ProcessWeaponMeta(processedWepData, PGCR.ActivityRefID);
+                            wepend = matchData.IndexOf("teams", wepstart);
                         }
+                        string wepData = matchData.Substring(wepstart, wepend - wepstart);
+
+                        //System.Diagnostics.Debug.Print("Weapon string found : " + wepData);
+                        wepstart = 0;
+                        wepend = 0;
+                        wepstart = wepData.IndexOf("referenceId", 0);
+                        int Tempwepend = wepData.LastIndexOf("uniqueWeaponKillsPrecisionKills");
+                        wepend = wepData.IndexOf("displayValue", Tempwepend) + 15;
+                        Tempwepend = wepData.IndexOf("\"", wepend);
+                        string processedWepData = wepData.Substring(wepstart, Tempwepend - wepstart);
+
+                        matchPlayer.UsedWeapons = ProcessWeaponMeta(processedWepData, PGCR.ActivityRefID);
                     }
-                    catch { System.Diagnostics.Debug.Print("Could not load wepaons for character"); }
+                    
 
                     if (!RecentPlayerCompare.Contains(matchPlayer.MainAccountIdentifier))
                     {
@@ -527,13 +526,23 @@ namespace Guardian_Theater_Desktop
 
         public List<Guardian.Weapon> ProcessWeaponMeta(string inputData, string LinkedMatchID)
         {
-
+            System.Diagnostics.Debug.Print("Weapon Data to parse: \n ----------------------------------------------------------------");
+            System.Diagnostics.Debug.Print(inputData);
             List<Guardian.Weapon> playerWeps = new List<Guardian.Weapon>();
             
             int start = 0;
             int end = 0;
-
-            while (start < inputData.LastIndexOf("referenceId"))
+            int lastIndex = inputData.LastIndexOf("referenceId");
+            if(lastIndex == 0)
+            {
+                System.Diagnostics.Debug.Print("only on wep");
+                lastIndex = 5;
+            }
+            if(lastIndex < 0)
+            {
+                return playerWeps;
+            }
+            while (start < lastIndex)
             {
                 start = inputData.IndexOf("referenceId", end) + 13;
                 end = inputData.IndexOf(",", start);
@@ -566,7 +575,7 @@ namespace Guardian_Theater_Desktop
 
                 playerWeps.Add(wep);
             }
-
+            System.Diagnostics.Debug.Print("----------------------------------------------------------------");
 
             return playerWeps;
         }
@@ -3435,6 +3444,7 @@ namespace Guardian_Theater_Desktop
                         break;
 
                     default:
+                        WeaponIdentifier = "Unknown Weapon";
                         break;
                 }
 
@@ -3445,6 +3455,11 @@ namespace Guardian_Theater_Desktop
                 {
                     Suspected = true;
                 }
+
+                System.Diagnostics.Debug.Print(WeaponIdentifier);
+                System.Diagnostics.Debug.Print(WeaponKills);
+                System.Diagnostics.Debug.Print(WeaponPrecisionRatio);
+
             }
             
 
@@ -3592,6 +3607,36 @@ namespace Guardian_Theater_Desktop
                 case "1655431815":
                     ActivityTypeID = "Expunge";
                     break;
+                case "2019961998":
+                    ActivityTypeID = "Lost Sector";
+                    break;
+                case "2122313384":
+                    ActivityTypeID = "Raid";
+                    break;
+                case "3933916447":
+                    ActivityTypeID = "Override";
+                    break;
+                case "3029388711":
+                    ActivityTypeID = "Nightfall:Hero";
+                    break;
+                case "2936791996":
+                    ActivityTypeID = "Lost Sector";
+                    break;
+                case "3293630130":
+                    ActivityTypeID = "Nightfall:Legend";
+                    break;
+                case "506197732":
+                    ActivityTypeID = "Patrol";
+                    break;
+                case "2829206727":
+                    ActivityTypeID = "Lost Sector";
+                    break;
+                case "3293630131":
+                    ActivityTypeID = "Nightfall:Hero";
+                    break;
+                case "2936791995":
+                    ActivityTypeID = "Lost Sector";
+                    break;
                 default:
                     ActivityTypeID = "Unkown Game Mode";
                     break;
@@ -3603,6 +3648,36 @@ namespace Guardian_Theater_Desktop
             LocationHash = hash;
             switch(hash)
             {
+                case "2936791995":
+                    ActivitySpaceID = "Exodus Garden 2A:Master";
+                    break;
+                case "3293630131":
+                    ActivitySpaceID = "Cosmodrome";
+                    break;
+                case "2829206727":
+                    ActivitySpaceID = "K1 Communication:Legend";
+                    break;
+                case "506197732":
+                    ActivitySpaceID = "Moon";
+                    break;
+                case "3293630130":
+                    ActivitySpaceID = "Cosmodrome";
+                    break;
+                case "2936791996":
+                    ActivitySpaceID = "Exodus Garden 2A:Legend";
+                    break;
+                case "3029388711":
+                    ActivitySpaceID = "Nessus";
+                    break;
+                case "3933916447":
+                    ActivitySpaceID = "Tangled Shore";
+                    break;
+                case "2122313384":
+                    ActivitySpaceID = "The Last Wish";
+                    break;
+                case "2019961998":
+                    ActivitySpaceID = "The Empty Tank:Legend";
+                    break;
                 case "2585182686":
                     ActivitySpaceID = "Fortess";
                     break;

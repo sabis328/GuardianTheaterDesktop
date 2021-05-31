@@ -166,5 +166,17 @@ namespace Guardian_Theater_Desktop.Properties {
                 this["ReportCounter"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool AlternateAccount {
+            get {
+                return ((bool)(this["AlternateAccount"]));
+            }
+            set {
+                this["AlternateAccount"] = value;
+            }
+        }
     }
 }

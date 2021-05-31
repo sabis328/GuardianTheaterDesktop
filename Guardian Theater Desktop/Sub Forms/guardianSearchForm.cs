@@ -41,6 +41,8 @@ namespace Guardian_Theater_Desktop
         private bool IsBusy = false;
         private void button1_Click(object sender, EventArgs e)
         {
+            Properties.Settings.Default.AlternateAccount = false;
+            Properties.Settings.Default.Save();
             if (textBox1.TextLength > 0)
             {
                 if (!IsBusy)
@@ -81,14 +83,31 @@ namespace Guardian_Theater_Desktop
                 SavedUser.MainAccountIdentifier = Properties.Settings.Default.MyAccountMainID;
                 SavedUser.MainType = cli.AccountTypeFromString(Properties.Settings.Default.MyAccountMainType);
 
+                treeView1.Nodes.Clear();
                 ListViewItem gItem = new ListViewItem();
                 gItem.Text = SavedUser.MainDisplayName;
                 gItem.Tag = SavedUser;
                 gItem.SubItems.Add(SavedUser.MainType.ToString());
                 listView1.Items.Add(gItem);
 
-                Task.Run(() => cli.LoadCharacterEntries(SavedUser));
+                Task.Run(() => cli.LoadCharacterEntries(SavedUser,Properties.Settings.Default.AlternateAccount));
             }
+        }
+
+        private bool fromAltLoad = false;
+        public void LoadAlternatePlatform(Guardian loadFor)
+        {
+            fromAltLoad = true;
+            Properties.Settings.Default.AlternateAccount = true;
+           
+            treeView1.Nodes.Clear();
+            ListViewItem gItem = new ListViewItem();
+            gItem.Text = loadFor.MainDisplayName;
+            gItem.Tag = loadFor;
+            gItem.SubItems.Add(loadFor.MainType.ToString());
+            listView1.Items.Add(gItem);
+
+            Task.Run(() => cli.LoadCharacterEntries(loadFor,true));
         }
 
         private void Cli__TheaterClientEvent(object sender, TheaterClient.ClientEventType e)
@@ -97,20 +116,22 @@ namespace Guardian_Theater_Desktop
             {
                 case TheaterClient.ClientEventType.SearchComplete:
                     IsBusy = false;
+                    fromAltLoad = false;
                     ShowAccounts((List<Guardian>)sender);
                     break;
                 case TheaterClient.ClientEventType.CharactersComplete:
                     ShowDetailedAccount((Guardian)sender);
                     IsBusy = false;
+                    fromAltLoad = false;
                     break;
                 default:
                     IsBusy = false;
-                    
+                    fromAltLoad = false;
                     break;
             }
         }
 
-       
+
         private void ShowDetailedAccount(Guardian loadedPlayer)
         {
             if (InvokeRequired)
@@ -129,32 +150,37 @@ namespace Guardian_Theater_Desktop
             playerNode.Nodes.Add(loadedPlayer.MainAccountIdentifier);
             playerNode.Nodes.Add(loadedPlayer.MainType.ToString());
 
-            foreach(Guardian.BungieAccount bacc in loadedPlayer.LinkedAccounts)
+            if (loadedPlayer.LinkedAccounts != null)
             {
-                playerNode.Nodes.Add(bacc.DisplayName + " | " + bacc.UserType.ToString());
-            }
-            playerNode.Expand();
-
-            if (Properties.Settings.Default.SaveLastSearch)
-            {
-                Properties.Settings.Default.MyAccountDisplayName = loadedPlayer.MainDisplayName;
-                Properties.Settings.Default.MyAccountMainType = loadedPlayer.MainType.ToString();
-                Properties.Settings.Default.MyAccountMainID = loadedPlayer.MainAccountIdentifier;
-
-                System.Diagnostics.Debug.Print("Finished loading data : checking for saved char value");
-                System.Diagnostics.Debug.Print(Properties.Settings.Default.MyAccountLastCharacterIdentifier);
-
-                if (Properties.Settings.Default.MyAccountLastCharacterIdentifier == "null")
+                foreach (Guardian.BungieAccount bacc in loadedPlayer.LinkedAccounts)
                 {
-                    Properties.Settings.Default.MyAccountLastCharacterIdentifier = "null";
+                    playerNode.Nodes.Add(bacc.DisplayName + " | " + bacc.UserType.ToString());
                 }
-
-                System.Diagnostics.Debug.Print(Properties.Settings.Default.MyAccountLastCharacterIdentifier);
-                Properties.Settings.Default.Save();
+                playerNode.Expand();
             }
+            if (!fromAltLoad)
+            {
+                if (Properties.Settings.Default.SaveLastSearch)
+                {
+                    Properties.Settings.Default.MyAccountDisplayName = loadedPlayer.MainDisplayName;
+                    Properties.Settings.Default.MyAccountMainType = loadedPlayer.MainType.ToString();
+                    Properties.Settings.Default.MyAccountMainID = loadedPlayer.MainAccountIdentifier;
 
+                    System.Diagnostics.Debug.Print("Finished loading data : checking for saved char value");
+                    System.Diagnostics.Debug.Print(Properties.Settings.Default.MyAccountLastCharacterIdentifier);
+
+                    if (Properties.Settings.Default.MyAccountLastCharacterIdentifier == "null")
+                    {
+                        Properties.Settings.Default.MyAccountLastCharacterIdentifier = "null";
+                    }
+
+                    System.Diagnostics.Debug.Print(Properties.Settings.Default.MyAccountLastCharacterIdentifier);
+                    Properties.Settings.Default.Save();
+                }
+            }
             treeView1.Nodes.Add(playerNode);
             parent_form.UpdateSelectedUser(loadedPlayer);
+            fromAltLoad = false;
         }
         private void ShowAccounts(List<Guardian> FoundUsers)
         {
@@ -167,6 +193,7 @@ namespace Guardian_Theater_Desktop
                 return;
             }
             label2.Text = "Found " + FoundUsers.Count + " users for " + textBox1.Text;
+           
             foreach (Guardian g in FoundUsers)
             {
                 ListViewItem gItem = new ListViewItem();
@@ -179,12 +206,13 @@ namespace Guardian_Theater_Desktop
             if (FoundUsers.Count == 1)
             {
                 IsBusy = true;
+
                 label1.Text = "Loading player information";
                 label2.Text = "Loading detailed player information";
                 parent_form.HideCharacterSubmenu();
                 treeView1.Nodes.Clear();
                 Guardian playerload = FoundUsers[0];
-                Task.Run(() => cli.LoadCharacterEntries(playerload));
+                Task.Run(() => cli.LoadCharacterEntries(playerload,false));
             }
         }
 
@@ -192,6 +220,8 @@ namespace Guardian_Theater_Desktop
         {
             if (!IsBusy)
             {
+                Properties.Settings.Default.AlternateAccount = false;
+                Properties.Settings.Default.Save();
                 IsBusy = true;
                 if (Properties.Settings.Default.SaveLastSearch)
                 {
@@ -206,7 +236,7 @@ namespace Guardian_Theater_Desktop
                 parent_form.HideCharacterSubmenu();
                 treeView1.Nodes.Clear();
                 Guardian playerload = (Guardian)listView1.SelectedItems[0].Tag;
-                Task.Run(() => cli.LoadCharacterEntries(playerload));
+                Task.Run(() => cli.LoadCharacterEntries(playerload, false)) ;
             }
         }
 

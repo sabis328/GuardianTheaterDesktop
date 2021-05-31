@@ -41,6 +41,7 @@ namespace Guardian_Theater_Desktop
             this.butttonCharacter3 = new System.Windows.Forms.Button();
             this.buttonCharacter2 = new System.Windows.Forms.Button();
             this.buttonCharacter1 = new System.Windows.Forms.Button();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.buttonGuardianSearch = new System.Windows.Forms.Button();
             this.buttonDashboard = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -85,7 +86,7 @@ namespace Guardian_Theater_Desktop
             this.panelCarnageSettings.Controls.Add(this.numericUpDown1);
             this.panelCarnageSettings.Controls.Add(this.label2);
             this.panelCarnageSettings.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelCarnageSettings.Location = new System.Drawing.Point(10, 365);
+            this.panelCarnageSettings.Location = new System.Drawing.Point(10, 392);
             this.panelCarnageSettings.Name = "panelCarnageSettings";
             this.panelCarnageSettings.Size = new System.Drawing.Size(252, 65);
             this.panelCarnageSettings.TabIndex = 6;
@@ -159,7 +160,7 @@ namespace Guardian_Theater_Desktop
             this.buttonCarnageMenu.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonCarnageMenu.Font = new System.Drawing.Font("Microsoft YaHei", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonCarnageMenu.ForeColor = System.Drawing.Color.White;
-            this.buttonCarnageMenu.Location = new System.Drawing.Point(10, 320);
+            this.buttonCarnageMenu.Location = new System.Drawing.Point(10, 347);
             this.buttonCarnageMenu.Name = "buttonCarnageMenu";
             this.buttonCarnageMenu.Size = new System.Drawing.Size(252, 45);
             this.buttonCarnageMenu.TabIndex = 5;
@@ -173,11 +174,12 @@ namespace Guardian_Theater_Desktop
             this.panelCharacterMenu.Controls.Add(this.butttonCharacter3);
             this.panelCharacterMenu.Controls.Add(this.buttonCharacter2);
             this.panelCharacterMenu.Controls.Add(this.buttonCharacter1);
+            this.panelCharacterMenu.Controls.Add(this.comboBox1);
             this.panelCharacterMenu.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelCharacterMenu.Font = new System.Drawing.Font("Microsoft YaHei", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.panelCharacterMenu.Location = new System.Drawing.Point(10, 200);
             this.panelCharacterMenu.Name = "panelCharacterMenu";
-            this.panelCharacterMenu.Size = new System.Drawing.Size(252, 120);
+            this.panelCharacterMenu.Size = new System.Drawing.Size(252, 147);
             this.panelCharacterMenu.TabIndex = 4;
             // 
             // butttonCharacter3
@@ -187,7 +189,7 @@ namespace Guardian_Theater_Desktop
             this.butttonCharacter3.FlatAppearance.BorderSize = 0;
             this.butttonCharacter3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.butttonCharacter3.ForeColor = System.Drawing.Color.White;
-            this.butttonCharacter3.Location = new System.Drawing.Point(0, 80);
+            this.butttonCharacter3.Location = new System.Drawing.Point(0, 107);
             this.butttonCharacter3.Name = "butttonCharacter3";
             this.butttonCharacter3.Size = new System.Drawing.Size(252, 40);
             this.butttonCharacter3.TabIndex = 3;
@@ -202,7 +204,7 @@ namespace Guardian_Theater_Desktop
             this.buttonCharacter2.FlatAppearance.BorderSize = 0;
             this.buttonCharacter2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonCharacter2.ForeColor = System.Drawing.Color.White;
-            this.buttonCharacter2.Location = new System.Drawing.Point(0, 40);
+            this.buttonCharacter2.Location = new System.Drawing.Point(0, 67);
             this.buttonCharacter2.Name = "buttonCharacter2";
             this.buttonCharacter2.Size = new System.Drawing.Size(252, 40);
             this.buttonCharacter2.TabIndex = 2;
@@ -217,13 +219,31 @@ namespace Guardian_Theater_Desktop
             this.buttonCharacter1.FlatAppearance.BorderSize = 0;
             this.buttonCharacter1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonCharacter1.ForeColor = System.Drawing.Color.White;
-            this.buttonCharacter1.Location = new System.Drawing.Point(0, 0);
+            this.buttonCharacter1.Location = new System.Drawing.Point(0, 27);
             this.buttonCharacter1.Name = "buttonCharacter1";
             this.buttonCharacter1.Size = new System.Drawing.Size(252, 40);
             this.buttonCharacter1.TabIndex = 1;
             this.buttonCharacter1.Text = "No Character Loaded";
             this.buttonCharacter1.UseVisualStyleBackColor = false;
             this.buttonCharacter1.Click += new System.EventHandler(this.buttonCharacter1_Click);
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(40)))), ((int)(((byte)(46)))));
+            this.comboBox1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.comboBox1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.comboBox1.ForeColor = System.Drawing.Color.White;
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "\tXbox Characters",
+            "\tPSN Characters",
+            "\tSteam Characters"});
+            this.comboBox1.Location = new System.Drawing.Point(0, 0);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(252, 27);
+            this.comboBox1.TabIndex = 4;
+            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            this.comboBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.comboBox1_MouseDown);
             // 
             // buttonGuardianSearch
             // 
@@ -399,5 +419,6 @@ namespace Guardian_Theater_Desktop
         private System.Windows.Forms.Panel selectedMenuIndicator;
         private System.Windows.Forms.Panel characterIndicator;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ComboBox comboBox1;
     }
 }

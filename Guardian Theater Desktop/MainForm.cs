@@ -298,6 +298,7 @@ namespace Guardian_Theater_Desktop
         private void button2_Click(object sender, EventArgs e)
         {
             updateSelectedIdeicatorLocating(buttonGuardianSearch.Location.Y);
+            fromUser = false;
             ShowSearchMenu();
             if (!userSelected)
             {
@@ -314,6 +315,7 @@ namespace Guardian_Theater_Desktop
         {
             if(selected != null)
             {
+                savedGuardian = selected;
                 userSelected = true;
                 if(selected.CharacterEntries.Count > 0)
                 {
@@ -352,6 +354,18 @@ namespace Guardian_Theater_Desktop
                             break;
                     }
 
+                    switch(selected.MainType)
+                    {
+                        case Guardian.BungieAccount.AccountType.Xbox:
+                            comboBox1.SelectedIndex = 0;
+                            break;
+                        case Guardian.BungieAccount.AccountType.PSN:
+                            comboBox1.SelectedIndex = 1;
+                            break;
+                        case Guardian.BungieAccount.AccountType.Steam:
+                            comboBox1.SelectedIndex = 2;
+                            break;
+                    }
 
                     if (Properties.Settings.Default.SaveLastSearch && Properties.Settings.Default.MyAccountLastCharacterIdentifier != "null")
                     {
@@ -368,6 +382,7 @@ namespace Guardian_Theater_Desktop
                     else
                     {
                         ShowCharacterSubMenu();
+                        fromUser = true;
                     }
                 }
                
@@ -378,6 +393,37 @@ namespace Guardian_Theater_Desktop
             }
         }
 
+        public void UpdateSelectedUserType(Guardian.BungieAccount.AccountType accType)
+        {
+            fromUser = false;
+            if(Properties.Settings.Default.SaveLastSearch)
+            {
+                Properties.Settings.Default.MyAccountMainType = accType.ToString();
+                Properties.Settings.Default.Save();
+            }
+            bool changed = false;
+            foreach(Guardian.BungieAccount bacc in savedGuardian.LinkedAccounts)
+            {
+                if(bacc.UserType == accType)
+                {
+                    savedGuardian.MainAccountIdentifier = bacc.AccountIdentifier;
+                    savedGuardian.MainDisplayName = bacc.DisplayName;
+                    savedGuardian.MainType = accType;
+                    changed = true;
+                    break;
+                }
+            }
+
+            
+            if(changed)
+            {
+                SearchForm.LoadAlternatePlatform(savedGuardian);
+                ShowSearchMenu();
+                HideCharacterSubmenu();
+            }
+           
+        }
+
         public void SetSelectedCharacter(int buttonOption)
         {
             System.Diagnostics.Debug.Print("setting location of char marker" + characterIndicator.Location.ToString());
@@ -386,13 +432,13 @@ namespace Guardian_Theater_Desktop
             switch(buttonOption)
             {
                 case 0:
-                    characterIndicator.Location = new Point(0, 90);
+                    characterIndicator.Location = new Point(0, 117);
                     break;
                 case 1:
-                    characterIndicator.Location = new Point(0, 130);
+                    characterIndicator.Location = new Point(0, 157);
                     break;
                 case 2:
-                    characterIndicator.Location = new Point(0, 170);
+                    characterIndicator.Location = new Point(0, 197);
                     break;
             }
 
@@ -435,6 +481,37 @@ namespace Guardian_Theater_Desktop
         private void FormContainerPanel_Paint(object sender, PaintEventArgs e)
         {
 
+        }
+
+        private bool fromUser { get; set; }
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (fromUser)
+            {
+                Guardian.BungieAccount.AccountType mainType = Guardian.BungieAccount.AccountType.Ignore;
+                switch (comboBox1.SelectedIndex)
+                {
+                    case 0:
+                        mainType = Guardian.BungieAccount.AccountType.Xbox;
+                        break;
+                    case 1:
+                        mainType = Guardian.BungieAccount.AccountType.PSN;
+                        break;
+                    case 2:
+                        mainType = Guardian.BungieAccount.AccountType.Steam;
+                        break;
+                }
+
+                if (mainType != Guardian.BungieAccount.AccountType.Ignore)
+                {
+                    UpdateSelectedUserType(mainType);
+                }
+            }
+        }
+
+        private void comboBox1_MouseDown(object sender, MouseEventArgs e)
+        {
+            fromUser = true;
         }
     }
 }
