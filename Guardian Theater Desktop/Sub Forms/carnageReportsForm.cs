@@ -26,6 +26,7 @@ namespace Guardian_Theater_Desktop
             InitializeComponent();
             parentForm = parent;
             CarnageClient = new TheaterClient();
+            CarnageClient.CancelAction = false;
             CarnageClient._BungieApiKey = parent.BungieKey;
             CarnageClient._TwitchApiKey = parent.TwitchKey;
             CarnageClient._TwitchApiSecret = parent.TwitchAuth;
@@ -44,6 +45,7 @@ namespace Guardian_Theater_Desktop
             }
             if (!IsBusy)
             {
+                CarnageClient.CancelAction = false;
                 parentForm.SetSelectedCharacter(charnum);
                 treeviewCarnageList.Nodes.Clear();
                 treeviewStreamList.Nodes.Clear();
@@ -80,6 +82,7 @@ namespace Guardian_Theater_Desktop
             if (!IsBusy)
             {
                 IsBusy = true;
+                CarnageClient.CancelAction = false;
                 int i = 0;
                 foreach (Guardian.CharacterEntry c in user.CharacterEntries)
                 {
@@ -155,6 +158,9 @@ namespace Guardian_Theater_Desktop
                         ProcessRecentPlayerList();
                     }
                     break;
+                case TheaterClient.ClientEventType.CancelAll:
+                    SettoIdle();
+                    break;
             }
         }
 
@@ -168,45 +174,46 @@ namespace Guardian_Theater_Desktop
                 return;
             }
             StreamHeader.Text = "Recent players";
-           
 
-            foreach(CarnageReport PGCR in CarnageClient.RecentMatches)
-            {
-                TreeNode MatchNode = new TreeNode(PGCR.ActivityTypeID + " | " + PGCR.ActivitySpaceID);
-                MatchNode.Nodes.Add(PGCR.ActivityStart.ToString());
-                MatchNode.Nodes.Add("Game hash :" + PGCR.ActivityHash);
-                MatchNode.Nodes.Add("Location hash :" + PGCR.LocationHash);
-
-                foreach(Guardian player in PGCR.ActivityPlayers)
+            foreach (CarnageReport PGCR in CarnageClient.RecentMatches)
                 {
-                    TreeNode PlayerNode = new TreeNode(player.MainDisplayName);
-                    foreach(Guardian.Weapon wep in player.UsedWeapons)
+                    TreeNode MatchNode = new TreeNode(PGCR.ActivityTypeID + " | " + PGCR.ActivitySpaceID);
+                    MatchNode.Nodes.Add(PGCR.ActivityStart.ToString());
+                    MatchNode.Nodes.Add("Game hash :" + PGCR.ActivityHash);
+                    MatchNode.Nodes.Add("Location hash :" + PGCR.LocationHash);
+
+                    foreach (Guardian player in PGCR.ActivityPlayers)
                     {
-                        TreeNode wepNode = new TreeNode(wep.WeaponIdentifier);
-                        wepNode.Nodes.Add("Kills : " + wep.WeaponKills);
-                        wepNode.Nodes.Add("Precision Ratio : " + wep.WeaponPrecisionRatio);
-
-                        if(wep.Suspected)
+                        TreeNode PlayerNode = new TreeNode(player.MainDisplayName);
+                        foreach (Guardian.Weapon wep in player.UsedWeapons)
                         {
-                            wepNode.BackColor = Color.Red;
-                            PlayerNode.BackColor = Color.Red;
-                            MatchNode.BackColor = Color.Red;
+                            TreeNode wepNode = new TreeNode(wep.WeaponIdentifier);
+                            wepNode.Nodes.Add("Kills : " + wep.WeaponKills);
+                            wepNode.Nodes.Add("Precision Ratio : " + wep.WeaponPrecisionRatio);
+
+                            if (wep.Suspected)
+                            {
+                                wepNode.BackColor = Color.Red;
+                                PlayerNode.BackColor = Color.Red;
+                                MatchNode.BackColor = Color.Red;
+                            }
+                            PlayerNode.Nodes.Add(wepNode);
                         }
-                        PlayerNode.Nodes.Add(wepNode);
+                        MatchNode.Nodes.Add(PlayerNode);
+
                     }
-                    MatchNode.Nodes.Add(PlayerNode);
-
+                    treeviewCarnageList.Nodes.Add(MatchNode);
                 }
-                treeviewCarnageList.Nodes.Add(MatchNode);
-            }
 
-            foreach(Guardian sortedPlayer in CarnageClient.RecentPlayers)
-            {
-                treeviewStreamList.Nodes.Add(sortedPlayer.MainDisplayName);
-            }
-            StatusLabel.Text = "Recent players loaded, checking for twitch accounts";
+                foreach (Guardian sortedPlayer in CarnageClient.RecentPlayers)
+                {
+                    treeviewStreamList.Nodes.Add(sortedPlayer.MainDisplayName);
+                }
+                StatusLabel.Text = "Recent players loaded, checking for twitch accounts";
 
-            Task.Run(() => QueueRecentPlayerList());
+                Task.Run(() => QueueRecentPlayerList());
+            
+           
         }
 
         private int playersChecked = 0;
@@ -215,6 +222,8 @@ namespace Guardian_Theater_Desktop
         private List<Guardian> TwitchLinkedGuardians;
 
         //Starts Checking all indepth data for recent players
+
+        List<TheaterClient> OpenClients = null;
         private void QueueRecentPlayerList()
         {
             if(InvokeRequired)
@@ -225,6 +234,7 @@ namespace Guardian_Theater_Desktop
             }
             if (CarnageClient.RecentPlayers.Count > 0)
             {
+                OpenClients = new List<TheaterClient>();
                 IsBusy = true;
                 RecentPlayersQueue = new List<Guardian>();
                 TwitchLinkedGuardians = new List<Guardian>();
@@ -235,9 +245,11 @@ namespace Guardian_Theater_Desktop
                 foreach (Guardian player in CarnageClient.RecentPlayers)
                 {
                     TheaterClient subClinet = new TheaterClient();
+                    subClinet.CancelAction = false;
                     subClinet._BungieApiKey = CarnageClient._BungieApiKey;
                     subClinet._TheaterClientEvent += CarnageClient__TheaterClientEvent;
 
+                    OpenClients.Add(subClinet);
                     Task.Run(() => subClinet.LoadLinkedAccounts(player, false));
                 }
             }
@@ -435,6 +447,7 @@ namespace Guardian_Theater_Desktop
             {
                 treeviewCarnageList.Nodes.Clear();
                 treeviewStreamList.Nodes.Clear();
+                CarnageClient.CancelAction = false;
                 CarnageClient.ReportsToLoad = parentForm.ReportCount;
                 progressBar1.Value = 0;
                 SetStatusMessage("Loading carnage reports", 0, CarnageClient.ReportsToLoad);
@@ -479,6 +492,22 @@ namespace Guardian_Theater_Desktop
             progressBar1.Update();
         }
 
+        private void SettoIdle()
+        {
+            if (InvokeRequired)
+            {
+                this.BeginInvoke((MethodInvoker)delegate
+                { SettoIdle(); });
+                return;
+            }
+
+            treeviewStreamList.Nodes.Clear();
+            treeviewCarnageList.Nodes.Clear();
+            progressBar1.Value = 0;
+            progressBar1.Maximum = 0;
+            StatusLabel.Text = "Attempting to cancel all threads";
+        }
+
         private void treeviewStreamList_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             if (e.Node.Tag != null && e.Node.Tag.GetType() == typeof(string))
@@ -486,6 +515,25 @@ namespace Guardian_Theater_Desktop
                 Clipboard.SetText((string)e.Node.Tag);
                 e.Node.Expand();
             }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            SetStatusMessage("Attempting to close all threads");
+            CarnageClient.CancelAction = true;
+
+            if (OpenClients != null)
+            {
+                foreach (TheaterClient subclient in OpenClients)
+                {
+                    subclient.CancelAction = true;
+                }
+
+                
+            }
+            IsBusy = false;
+
+            SettoIdle();
         }
     }
 }

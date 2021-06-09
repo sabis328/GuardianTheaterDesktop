@@ -13,6 +13,8 @@ namespace Guardian_Theater_Desktop
 {
     public class TheaterClient
     {
+
+        public bool CancelAction { get; set; }
         public string _BungieApiKey { get; set; }
         public string _TwitchApiKey { get; set; }
         public string _TwitchApiSecret { get; set; }
@@ -37,7 +39,8 @@ namespace Guardian_Theater_Desktop
             AllCarnageComplete,
             AllCarnageFail,
             CheckLinkedAccountsComplete,
-            CheckLinkedAccountsFail
+            CheckLinkedAccountsFail,
+            CancelAll
         }
         public string ConvertAccountType(Guardian.BungieAccount.AccountType UserType)
         {
@@ -79,254 +82,279 @@ namespace Guardian_Theater_Desktop
 
         public void SearchBungieAccounts(string Username, Guardian.BungieAccount.AccountType UserType)
         {
-            if (!InProgress)
+            while (!CancelAction)
             {
-                InProgress = true;
-                HttpWebRequest _client;
-                ServicePointManager.DefaultConnectionLimit = 15;
-                try
+                if (!InProgress)
                 {
-                    string accTypeModifier = ConvertAccountType(UserType);
-
-                    _client = (HttpWebRequest)WebRequest.Create(string.Format(_apiBase + "{0}{1}{2}{3}", "SearchDestinyPlayer/", accTypeModifier, "/", Uri.EscapeDataString(Username)));
-                    _client.Method = "GET";
-                    _client.Headers.Add("X-API-KEY", _BungieApiKey);
-                    _client.KeepAlive = false;
-
-                    string responseText;
-                    using (HttpWebResponse _response = (HttpWebResponse)_client.GetResponse())
+                    InProgress = true;
+                    HttpWebRequest _client;
+                    ServicePointManager.DefaultConnectionLimit = 15;
+                    try
                     {
-                        responseText = new StreamReader(_response.GetResponseStream()).ReadToEnd();
-                        _response.Close();
-                    }
-                    List<Guardian> foundPlayers = new List<Guardian>();
-                    List<string> compareplayerIDs = new List<string>();
-                    List<string> foundPlayerMeta = new List<string>();
+                        string accTypeModifier = ConvertAccountType(UserType);
 
-                    int start = 0;
-                    int end = 0;
-                    int tempStart = 0;
+                        _client = (HttpWebRequest)WebRequest.Create(string.Format(_apiBase + "{0}{1}{2}{3}", "SearchDestinyPlayer/", accTypeModifier, "/", Uri.EscapeDataString(Username)));
+                        _client.Method = "GET";
+                        _client.Headers.Add("X-API-KEY", _BungieApiKey);
+                        _client.KeepAlive = false;
 
-                    //System.Diagnostics.Debug.Print(responseText);
-
-                    if (responseText.Contains("\"Response\":[]"))
-                    {
-                        //No results were found
-                        InProgress = false;
-                        _TheaterClientEvent?.Invoke(new List<Guardian>(), ClientEventType.SearchFail);
-                        return;
-                    }
-                    while (start < responseText.LastIndexOf("displayName"))
-                    {
-                        start = responseText.IndexOf("membershipType", end);
-                        tempStart = start;
-                        end = responseText.IndexOf("displayName", start);
-                        start = responseText.IndexOf("}", end);
-                        string playerMeta = responseText.Substring(tempStart, start - tempStart);
-
-                        foundPlayerMeta.Add(playerMeta);
-                    }
-
-                    foreach (string player in foundPlayerMeta)
-                    {
-
-                        Guardian playerAccount = new Guardian();
-                        playerAccount.ProcessPlayerInformation(player);
-                        if (!compareplayerIDs.Contains(playerAccount.MainAccountIdentifier))
+                        string responseText;
+                        using (HttpWebResponse _response = (HttpWebResponse)_client.GetResponse())
                         {
-                            compareplayerIDs.Add(playerAccount.MainAccountIdentifier);
-
-                            foundPlayers.Add(playerAccount);
+                            responseText = new StreamReader(_response.GetResponseStream()).ReadToEnd();
+                            _response.Close();
                         }
-                    }
+                        List<Guardian> foundPlayers = new List<Guardian>();
+                        List<string> compareplayerIDs = new List<string>();
+                        List<string> foundPlayerMeta = new List<string>();
 
-                    _TheaterClientEvent?.Invoke(foundPlayers, ClientEventType.SearchComplete);
-                    InProgress = false;
-                }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.Print("Search for account failed : " + Username + " / " + ex.Message);
-                    _TheaterClientEvent?.Invoke(new List<Guardian>(), ClientEventType.SearchFail);
-                    InProgress = false;
+                        int start = 0;
+                        int end = 0;
+                        int tempStart = 0;
+
+                        //System.Diagnostics.Debug.Print(responseText);
+
+                        if (responseText.Contains("\"Response\":[]"))
+                        {
+                            //No results were found
+                            InProgress = false;
+                            _TheaterClientEvent?.Invoke(new List<Guardian>(), ClientEventType.SearchFail);
+                            break;
+                        }
+                        while (start < responseText.LastIndexOf("displayName"))
+                        {
+                            start = responseText.IndexOf("membershipType", end);
+                            tempStart = start;
+                            end = responseText.IndexOf("displayName", start);
+                            start = responseText.IndexOf("}", end);
+                            string playerMeta = responseText.Substring(tempStart, start - tempStart);
+
+                            foundPlayerMeta.Add(playerMeta);
+                        }
+
+                        foreach (string player in foundPlayerMeta)
+                        {
+
+                            Guardian playerAccount = new Guardian();
+                            playerAccount.ProcessPlayerInformation(player);
+                            if (!compareplayerIDs.Contains(playerAccount.MainAccountIdentifier))
+                            {
+                                compareplayerIDs.Add(playerAccount.MainAccountIdentifier);
+
+                                foundPlayers.Add(playerAccount);
+                            }
+                        }
+
+                        _TheaterClientEvent?.Invoke(foundPlayers, ClientEventType.SearchComplete);
+                        InProgress = false;
+                        break;
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.Print("Search for account failed : " + Username + " / " + ex.Message);
+                        _TheaterClientEvent?.Invoke(new List<Guardian>(), ClientEventType.SearchFail);
+                        InProgress = false;
+                        break;
+                    }
                 }
             }
         }
 
         public void LoadCharacterEntries(Guardian inputAccount, bool fromAlt = true)
         {
-            if (!InProgress)
+            while (!CancelAction)
             {
-                HttpWebRequest _client;
-                ServicePointManager.DefaultConnectionLimit = 15;
-                try
+                if (!InProgress)
                 {
-                    string searchType = ConvertAccountType(inputAccount.MainType);
-
-
-                    _client = (HttpWebRequest)WebRequest.Create(string.Format(_apiBase + "{0}{1}{2}{3}", searchType, "/Profile/", inputAccount.MainAccountIdentifier, "/?components=100"));
-                    _client.Method = "GET";
-                    _client.Headers.Add("X-API-KEY", _BungieApiKey);
-                    _client.KeepAlive = false;
-
-                    System.Diagnostics.Debug.Print("Character request");
-                    System.Diagnostics.Debug.Print(_client.RequestUri.ToString());
-
-                    string responseBody;
-                    using (HttpWebResponse _response = (HttpWebResponse)_client.GetResponse())
+                    HttpWebRequest _client;
+                    ServicePointManager.DefaultConnectionLimit = 15;
+                    try
                     {
-                        responseBody = new StreamReader(_response.GetResponseStream()).ReadToEnd();
-                        _response.Close();
-                    }
+                        string searchType = ConvertAccountType(inputAccount.MainType);
 
-                    int start = 0;
-                    int end = 0;
 
-                    start = responseBody.IndexOf("characterIds", end) + 16;
-                    end = responseBody.IndexOf("]", start);
-
-                    string charMeta = responseBody.Substring(start, end - start);
-                    string[] idHolder = charMeta.Split(',');
-                    List<string> charactersCleaned = new List<string>();
-                    foreach (string id in idHolder)
-                    {
-                        string parsedID = id.Replace("\"", "");
-                        charactersCleaned.Add(parsedID);
-                    }
-                    inputAccount.CharacterEntries = new List<Guardian.CharacterEntry>();
-
-                    foreach (string charID in charactersCleaned)
-                    {
-                        _client = (HttpWebRequest)WebRequest.Create(string.Format(_apiBase + "{0}{1}{2}{3}{4}{5}", searchType, "/Profile/", inputAccount.MainAccountIdentifier, "/Character/", charID, "/?components=200"));
+                        _client = (HttpWebRequest)WebRequest.Create(string.Format(_apiBase + "{0}{1}{2}{3}", searchType, "/Profile/", inputAccount.MainAccountIdentifier, "/?components=100"));
                         _client.Method = "GET";
                         _client.Headers.Add("X-API-KEY", _BungieApiKey);
+                        _client.KeepAlive = false;
 
-                        System.Diagnostics.Debug.Print("Loading for character : \n" + _client.RequestUri.ToString());
-                        using (HttpWebResponse _subresponse = (HttpWebResponse)_client.GetResponse())
+                        System.Diagnostics.Debug.Print("Character request");
+                        System.Diagnostics.Debug.Print(_client.RequestUri.ToString());
+
+                        string responseBody;
+                        using (HttpWebResponse _response = (HttpWebResponse)_client.GetResponse())
                         {
-                            charMeta = new StreamReader(_subresponse.GetResponseStream()).ReadToEnd();
-                            _subresponse.Close();
+                            responseBody = new StreamReader(_response.GetResponseStream()).ReadToEnd();
+                            _response.Close();
                         }
-                        Guardian.CharacterEntry PlayerChar = new Guardian.CharacterEntry();
-                        PlayerChar.CharacterIdentifier = charID;
-                        PlayerChar.parseCharacterMeta(charMeta);
 
-                        inputAccount.CharacterEntries.Add(PlayerChar);
+                        int start = 0;
+                        int end = 0;
 
-                    }
+                        start = responseBody.IndexOf("characterIds", end) + 16;
+                        end = responseBody.IndexOf("]", start);
 
-                    InProgress = false;
-                    if (!fromAlt)
-                    {
-                        LoadLinkedAccounts(inputAccount, true);
+                        string charMeta = responseBody.Substring(start, end - start);
+                        string[] idHolder = charMeta.Split(',');
+                        List<string> charactersCleaned = new List<string>();
+                        foreach (string id in idHolder)
+                        {
+                            string parsedID = id.Replace("\"", "");
+                            charactersCleaned.Add(parsedID);
+                        }
+                        inputAccount.CharacterEntries = new List<Guardian.CharacterEntry>();
+
+                        foreach (string charID in charactersCleaned)
+                        {
+                            _client = (HttpWebRequest)WebRequest.Create(string.Format(_apiBase + "{0}{1}{2}{3}{4}{5}", searchType, "/Profile/", inputAccount.MainAccountIdentifier, "/Character/", charID, "/?components=200"));
+                            _client.Method = "GET";
+                            _client.Headers.Add("X-API-KEY", _BungieApiKey);
+
+                            System.Diagnostics.Debug.Print("Loading for character : \n" + _client.RequestUri.ToString());
+                            using (HttpWebResponse _subresponse = (HttpWebResponse)_client.GetResponse())
+                            {
+                                charMeta = new StreamReader(_subresponse.GetResponseStream()).ReadToEnd();
+                                _subresponse.Close();
+                            }
+                            Guardian.CharacterEntry PlayerChar = new Guardian.CharacterEntry();
+                            PlayerChar.CharacterIdentifier = charID;
+                            PlayerChar.parseCharacterMeta(charMeta);
+
+                            inputAccount.CharacterEntries.Add(PlayerChar);
+
+                        }
+
+                        InProgress = false;
+                        if (!fromAlt)
+                        {
+                            LoadLinkedAccounts(inputAccount, true);
+                            _TheaterClientEvent?.Invoke(inputAccount, ClientEventType.CharactersComplete);
+                           
+                            break;
+                        }
+
                         _TheaterClientEvent?.Invoke(inputAccount, ClientEventType.CharactersComplete);
+                        break ;
+
                     }
-
-                    _TheaterClientEvent?.Invoke(inputAccount, ClientEventType.CharactersComplete);
-
+                    catch (Exception ex)
+                    {
+                        InProgress = false;
+                        _TheaterClientEvent?.Invoke(inputAccount, ClientEventType.CharactersFail);
+                        break;
+                    }
                 }
-                catch (Exception ex)
-                {
-                    InProgress = false;
-                    _TheaterClientEvent?.Invoke(inputAccount, ClientEventType.CharactersFail);
-                }
+            }
+
+            if(CancelAction)
+            {
+                _TheaterClientEvent?.Invoke(this, ClientEventType.CancelAll);
             }
         }
 
         public void LoadLinkedAccounts(Guardian inputAccount, bool fromPlayerSearch = true, int failCount = 0)
         {
-            if (!InProgress)
+            while (!CancelAction)
             {
-                InProgress = true;
-                HttpWebRequest _client;
-                ServicePointManager.DefaultConnectionLimit = 15;
-                string responseBody = "notset";
-                string requrl = "";
-
-                if (failCount == 3)
+                if (!InProgress)
                 {
-                    System.Diagnostics.Debug.Print("Loading linked accounts failed : " + inputAccount.MainDisplayName);
-                    _TheaterClientEvent?.Invoke(inputAccount, ClientEventType.CheckLinkedAccountsFail);
-                    return;
-                }
-                if (failCount > 0)
-                {
-                    System.Threading.Thread.Sleep(1000);
-                }
-                try
-                {
+                    InProgress = true;
+                    HttpWebRequest _client;
+                    ServicePointManager.DefaultConnectionLimit = 15;
+                    string responseBody = "notset";
+                    string requrl = "";
 
-                    string searchType = ConvertAccountType(inputAccount.MainType);
-
-
-                    _client = (HttpWebRequest)WebRequest.Create(string.Format(_apiBase + "{0}{1}{2}{3}", searchType, "/Profile/", inputAccount.MainAccountIdentifier, "/LinkedProfiles/?getAllMemberships=true"));
-                    requrl = _client.RequestUri.ToString();
-                    _client.Method = "GET";
-                    _client.Headers.Add("X-API-KEY", _BungieApiKey);
-                    _client.KeepAlive = false;
-
-                    System.Diagnostics.Debug.Print("Loading in depth for account : \n" + _client.RequestUri.ToString());
-
-
-                    using (HttpWebResponse _response = (HttpWebResponse)_client.GetResponse())
+                    if (failCount == 3)
                     {
-                        responseBody = new StreamReader(_response.GetResponseStream()).ReadToEnd();
-                        _response.Close();
-
+                        System.Diagnostics.Debug.Print("Loading linked accounts failed : " + inputAccount.MainDisplayName);
+                        _TheaterClientEvent?.Invoke(inputAccount, ClientEventType.CheckLinkedAccountsFail);
+                        break;
                     }
-
-                    inputAccount.LinkedAccounts = new List<Guardian.BungieAccount>();
-                    inputAccount.ProcessPlayerInformation(responseBody, fromPlayerSearch);
-
-                    if (!fromPlayerSearch)
+                    if (failCount > 0)
                     {
-                        foreach (Guardian.BungieAccount bacc in inputAccount.LinkedAccounts)
+                        System.Threading.Thread.Sleep(1000);
+                    }
+                    try
+                    {
+
+                        string searchType = ConvertAccountType(inputAccount.MainType);
+
+
+                        _client = (HttpWebRequest)WebRequest.Create(string.Format(_apiBase + "{0}{1}{2}{3}", searchType, "/Profile/", inputAccount.MainAccountIdentifier, "/LinkedProfiles/?getAllMemberships=true"));
+                        requrl = _client.RequestUri.ToString();
+                        _client.Method = "GET";
+                        _client.Headers.Add("X-API-KEY", _BungieApiKey);
+                        _client.KeepAlive = false;
+
+                        System.Diagnostics.Debug.Print("Loading in depth for account : \n" + _client.RequestUri.ToString());
+
+
+                        using (HttpWebResponse _response = (HttpWebResponse)_client.GetResponse())
                         {
-
-                            if (bacc.UserType == Guardian.BungieAccount.AccountType.BNET)
-                            {
-                                //System.Diagnostics.Debug.Print("Checking " + bacc.DisplayName + " for hard linked twitch");
-                                _client = (HttpWebRequest)WebRequest.Create(string.Format("https://www.bungie.net/en/Profile/254/{0}{1}", bacc.AccountIdentifier, "/", Uri.EscapeDataString(bacc.DisplayName)));
-                                requrl = _client.RequestUri.ToString();
-                                _client.Method = "GET";
-                                _client.Headers.Add("X-API-KEY", _BungieApiKey);
-                                _client.KeepAlive = false;
-                                using (HttpWebResponse _subResponse = (HttpWebResponse)_client.GetResponse())
-                                {
-
-                                    responseBody = new StreamReader(_subResponse.GetResponseStream()).ReadToEnd();
-                                    _subResponse.Close();
-                                }
-                                int start = responseBody.IndexOf("profiles-container", 0);
-                                int end = responseBody.IndexOf("reportClanProfileModal", start);
-                                responseBody = responseBody.Substring(start, end - start);
-                                if (responseBody.Contains("href=\"https://twitch.tv/"))
-                                {
-                                    inputAccount.HasTwitch = true;
-                                    start = responseBody.IndexOf("https://twitch.tv", 0) + 18;
-                                    end = responseBody.IndexOf("\"", start);
-
-                                    inputAccount.TwitchName = responseBody.Substring(start, end - start);
-                                }
-                            }
+                            responseBody = new StreamReader(_response.GetResponseStream()).ReadToEnd();
+                            _response.Close();
 
                         }
 
-                        _TheaterClientEvent?.Invoke(inputAccount, ClientEventType.CheckLinkedAccountsComplete);
+                        inputAccount.LinkedAccounts = new List<Guardian.BungieAccount>();
+                        inputAccount.ProcessPlayerInformation(responseBody, fromPlayerSearch);
+
+                        if (!fromPlayerSearch)
+                        {
+                            foreach (Guardian.BungieAccount bacc in inputAccount.LinkedAccounts)
+                            {
+
+                                if (bacc.UserType == Guardian.BungieAccount.AccountType.BNET)
+                                {
+                                    //System.Diagnostics.Debug.Print("Checking " + bacc.DisplayName + " for hard linked twitch");
+                                    _client = (HttpWebRequest)WebRequest.Create(string.Format("https://www.bungie.net/en/Profile/254/{0}{1}", bacc.AccountIdentifier, "/", Uri.EscapeDataString(bacc.DisplayName)));
+                                    requrl = _client.RequestUri.ToString();
+                                    _client.Method = "GET";
+                                    _client.Headers.Add("X-API-KEY", _BungieApiKey);
+                                    _client.KeepAlive = false;
+                                    using (HttpWebResponse _subResponse = (HttpWebResponse)_client.GetResponse())
+                                    {
+
+                                        responseBody = new StreamReader(_subResponse.GetResponseStream()).ReadToEnd();
+                                        _subResponse.Close();
+                                    }
+                                    int start = responseBody.IndexOf("profiles-container", 0);
+                                    int end = responseBody.IndexOf("reportClanProfileModal", start);
+                                    responseBody = responseBody.Substring(start, end - start);
+                                    if (responseBody.Contains("href=\"https://twitch.tv/"))
+                                    {
+                                        inputAccount.HasTwitch = true;
+                                        start = responseBody.IndexOf("https://twitch.tv", 0) + 18;
+                                        end = responseBody.IndexOf("\"", start);
+
+                                        inputAccount.TwitchName = responseBody.Substring(start, end - start);
+                                    }
+                                }
+
+                            }
+
+                            _TheaterClientEvent?.Invoke(inputAccount, ClientEventType.CheckLinkedAccountsComplete);
+                        }
+
+                        InProgress = false;
+                        break;
+
+
+
                     }
+                    catch (Exception ex)
+                    {
 
-                    InProgress = false;
-
-
-
-
+                        failCount += 1;
+                        LoadLinkedAccounts(inputAccount, false, failCount);
+                        
+                    }
                 }
-                catch (Exception ex)
-                {
+            }
+            if (CancelAction)
+            {
 
-                    failCount += 1;
-                    LoadLinkedAccounts(inputAccount, false, failCount);
-
-                }
+                _TheaterClientEvent?.Invoke(this, ClientEventType.CancelAll);
             }
         }
 
@@ -347,180 +375,202 @@ namespace Guardian_Theater_Desktop
         public int ReportsLoaded { get; set; }
         public void LoadCarnageReportList(Guardian.CharacterEntry CharToLoad, Guardian inputAccount, int Count = 1)
         {
-            RecentMatches = new List<CarnageReport>();
-            RecentPlayers = new List<Guardian>();
-            RecentPlayerCompare = new List<string>();
-            HttpWebRequest _client;
-            ServicePointManager.DefaultConnectionLimit = 15;
-            ReportsToLoad = Count;
-            ReportsLoaded = 0;
-            try
+            while (!CancelAction)
             {
-                string searchType = ConvertAccountType(inputAccount.MainType);
-
-
-                _client = (HttpWebRequest)WebRequest.Create(string.Format(_apiBase + "{0}{1}{2}{3}{4}{5}", searchType, "/Account/", inputAccount.MainAccountIdentifier
-                    , "/Character/", CharToLoad.CharacterIdentifier, "/Stats/Activities/?count=" + Count.ToString()));
-
-                _client.Method = "GET";
-                _client.Headers.Add("X-API-KEY", _BungieApiKey);
-                _client.KeepAlive = false;
-                
-                string responseBody;
-                using (HttpWebResponse _response = (HttpWebResponse)_client.GetResponse())
+                RecentMatches = new List<CarnageReport>();
+                RecentPlayers = new List<Guardian>();
+                RecentPlayerCompare = new List<string>();
+                HttpWebRequest _client;
+                ServicePointManager.DefaultConnectionLimit = 15;
+                ReportsToLoad = Count;
+                ReportsLoaded = 0;
+                try
                 {
-                    responseBody = new StreamReader(_response.GetResponseStream()).ReadToEnd();
-                    _response.Close();
-                }
-                //System.Diagnostics.Debug.Print(responseBody);
-                int start = 0;
-                int end = 0;
-                List<string> Matches = new List<string>();
-                while (start < responseBody.LastIndexOf("instanceId"))
-                {
-                    start = responseBody.IndexOf("instanceId", end) + 13;
-                    end = responseBody.IndexOf(",", start) - 1;
-                    Matches.Add(responseBody.Substring(start, end - start));
-                }
+                    string searchType = ConvertAccountType(inputAccount.MainType);
 
-                //List<CarnageReport> CarnageReports = new List<CarnageReport>();
 
-                foreach (string matchID in Matches)
-                {
-                    Task.Run(() => LoadSingleCarnageReport(matchID, inputAccount));
+                    _client = (HttpWebRequest)WebRequest.Create(string.Format(_apiBase + "{0}{1}{2}{3}{4}{5}", searchType, "/Account/", inputAccount.MainAccountIdentifier
+                        , "/Character/", CharToLoad.CharacterIdentifier, "/Stats/Activities/?count=" + Count.ToString()));
+
+                    _client.Method = "GET";
+                    _client.Headers.Add("X-API-KEY", _BungieApiKey);
+                    _client.KeepAlive = false;
+
+                    string responseBody;
+                    using (HttpWebResponse _response = (HttpWebResponse)_client.GetResponse())
+                    {
+                        responseBody = new StreamReader(_response.GetResponseStream()).ReadToEnd();
+                        _response.Close();
+                    }
+                    //System.Diagnostics.Debug.Print(responseBody);
+                    int start = 0;
+                    int end = 0;
+                    List<string> Matches = new List<string>();
+                    while (start < responseBody.LastIndexOf("instanceId"))
+                    {
+                        start = responseBody.IndexOf("instanceId", end) + 13;
+                        end = responseBody.IndexOf(",", start) - 1;
+                        Matches.Add(responseBody.Substring(start, end - start));
+                    }
+
+                    //List<CarnageReport> CarnageReports = new List<CarnageReport>();
+
+                    foreach (string matchID in Matches)
+                    {
+                        Task.Run(() => LoadSingleCarnageReport(matchID, inputAccount));
+                    }
+
+                    break;
                 }
+                catch (Exception ex) { System.Diagnostics.Debug.Print("Failed to load carnage reports : " + ex.Message); _TheaterClientEvent?.Invoke(ReportsLoaded, ClientEventType.AllCarnageFail);break; }
 
-               
             }
-            catch (Exception ex) { System.Diagnostics.Debug.Print("Failed to load carnage reports : " + ex.Message); _TheaterClientEvent?.Invoke(ReportsLoaded, ClientEventType.AllCarnageFail); }
+            if(CancelAction)
+            {
+                _TheaterClientEvent?.Invoke(this, ClientEventType.CancelAll);
+            }
         }
         public void LoadSingleCarnageReport(string matchID, Guardian inputAccount)
         {
-
-            HttpWebRequest _client;
-            ServicePointManager.DefaultConnectionLimit = 15;
-            int start = 0;
-            int end = 0;
-            try
+            while (!CancelAction)
             {
-
-                CarnageReport PGCR = new CarnageReport();
-                PGCR.ActivityRefID = matchID;
-
-                _client = (HttpWebRequest)WebRequest.Create("https://www.bungie.net/Platform/Destiny2/Stats/PostGameCarnageReport/" + matchID + "/");
-                _client.Method = "GET";
-                _client.Headers.Add("X-API-KEY", _BungieApiKey);
-
-                string matchData;
-                using (HttpWebResponse _subresponse = (HttpWebResponse)_client.GetResponse())
+                HttpWebRequest _client;
+                ServicePointManager.DefaultConnectionLimit = 15;
+                int start = 0;
+                int end = 0;
+                try
                 {
-                    matchData = new StreamReader(_subresponse.GetResponseStream()).ReadToEnd();
-                    _subresponse.Close();
-                }
-                start = 0;
-                end = 0;
 
-                start = matchData.IndexOf("period", end) + 9;
-                end = matchData.IndexOf(",", start) - 1;
-                string timetoParse = matchData.Substring(start, end - start);
+                    CarnageReport PGCR = new CarnageReport();
+                    PGCR.ActivityRefID = matchID;
 
-                string temploc;
-                string tempact;
-                DateTime startAT = DateTime.Parse(timetoParse).ToUniversalTime();
-                PGCR.ActivityStart = startAT;
+                    _client = (HttpWebRequest)WebRequest.Create("https://www.bungie.net/Platform/Destiny2/Stats/PostGameCarnageReport/" + matchID + "/");
+                    _client.Method = "GET";
+                    _client.Headers.Add("X-API-KEY", _BungieApiKey);
 
-                start = matchData.IndexOf("referenceId", end) + 13;
-                end = matchData.IndexOf(",", start);
-
-                temploc = matchData.Substring(start, end - start);
-                PGCR.SetLocation(matchData.Substring(start, end - start));
-
-                start = matchData.IndexOf("directorActivityHash", end) + 22;
-                end = matchData.IndexOf(",", start);
-
-                tempact = matchData.Substring(start, end - start);
-                PGCR.SetGameType(matchData.Substring(start, end - start));
-
-                start = 0;
-                end = 0;
-               
-                List<Guardian> matchPlayers = new List<Guardian>();
-                while (start < matchData.LastIndexOf("displayName"))
-                {
-                    start = matchData.IndexOf("membershipType", end);
-                    int tempStart = start;
-                    end = matchData.IndexOf("displayName", start);
-                    start = matchData.IndexOf("}", end);
-                    string playerMeta = matchData.Substring(tempStart, start - tempStart);
-
-                   
-
-                    Guardian matchPlayer = new Guardian();
-                    matchPlayer.ProcessPlayerInformation(playerMeta);
-                    matchPlayers.Add(matchPlayer);
-
-                   
-                    int wepstart = matchData.IndexOf("weapons", end);
-                    if (wepstart > 0)
+                    string matchData;
+                    using (HttpWebResponse _subresponse = (HttpWebResponse)_client.GetResponse())
                     {
-                        int wepend = matchData.IndexOf("destinyUserInfo", wepstart);
-                        if (wepend < 0)
-                        {
-                            wepend = matchData.IndexOf("teams", wepstart);
-                        }
-                        string wepData = matchData.Substring(wepstart, wepend - wepstart);
-
-                        //System.Diagnostics.Debug.Print("Weapon string found : " + wepData);
-                        wepstart = 0;
-                        wepend = 0;
-                        wepstart = wepData.IndexOf("referenceId", 0);
-                        int Tempwepend = wepData.LastIndexOf("uniqueWeaponKillsPrecisionKills");
-                        wepend = wepData.IndexOf("displayValue", Tempwepend) + 15;
-                        Tempwepend = wepData.IndexOf("\"", wepend);
-                        string processedWepData = wepData.Substring(wepstart, Tempwepend - wepstart);
-
-                        matchPlayer.UsedWeapons = ProcessWeaponMeta(processedWepData, PGCR.ActivityRefID);
+                        matchData = new StreamReader(_subresponse.GetResponseStream()).ReadToEnd();
+                        _subresponse.Close();
                     }
-                    
+                    start = 0;
+                    end = 0;
 
-                    if (!RecentPlayerCompare.Contains(matchPlayer.MainAccountIdentifier))
+                    start = matchData.IndexOf("period", end) + 9;
+                    end = matchData.IndexOf(",", start) - 1;
+                    string timetoParse = matchData.Substring(start, end - start);
+
+                    string temploc;
+                    string tempact;
+                    DateTime startAT = DateTime.Parse(timetoParse).ToUniversalTime();
+                    PGCR.ActivityStart = startAT;
+
+                    start = matchData.IndexOf("referenceId", end) + 13;
+                    end = matchData.IndexOf(",", start);
+
+                    temploc = matchData.Substring(start, end - start);
+                    PGCR.SetLocation(matchData.Substring(start, end - start));
+
+                    start = matchData.IndexOf("directorActivityHash", end) + 22;
+                    end = matchData.IndexOf(",", start);
+
+                    tempact = matchData.Substring(start, end - start);
+                    PGCR.SetGameType(matchData.Substring(start, end - start));
+
+                    start = 0;
+                    end = 0;
+
+                    List<Guardian> matchPlayers = new List<Guardian>();
+                    while (start < matchData.LastIndexOf("displayName"))
                     {
-                        if (matchPlayer.MainDisplayName != PlayerExclusion)
+                        start = matchData.IndexOf("membershipType", end);
+                        int tempStart = start;
+                        end = matchData.IndexOf("displayName", start);
+                        start = matchData.IndexOf("}", end);
+                        string playerMeta = matchData.Substring(tempStart, start - tempStart);
+
+
+
+                        Guardian matchPlayer = new Guardian();
+                        matchPlayer.ProcessPlayerInformation(playerMeta);
+                        matchPlayers.Add(matchPlayer);
+
+
+                        int wepstart = matchData.IndexOf("weapons", end);
+                        if (wepstart > 0)
                         {
-                            RecentPlayerCompare.Add(matchPlayer.MainAccountIdentifier);
-                            matchPlayer.LinkedMatches.Add(PGCR);
-                            matchPlayer.LinkedMatchTimes.Add(PGCR.ActivityStart);
-                            RecentPlayers.Add(matchPlayer);
-                        }
-                    }
-                    else
-                    {
-                        foreach(Guardian g in RecentPlayers)
-                        {
-                            if(g.MainAccountIdentifier == matchPlayer.MainAccountIdentifier)
+                            int wepend = matchData.IndexOf("destinyUserInfo", wepstart);
+                            if (wepend < 0)
                             {
-                                g.LinkedMatches.Add(PGCR);
-                                g.LinkedMatchTimes.Add(PGCR.ActivityStart);
+                                wepend = matchData.IndexOf("teams", wepstart);
+                            }
+                            string wepData = matchData.Substring(wepstart, wepend - wepstart);
+
+                            //System.Diagnostics.Debug.Print("Weapon string found : " + wepData);
+                            wepstart = 0;
+                            wepend = 0;
+                            wepstart = wepData.IndexOf("referenceId", 0);
+                            int Tempwepend = wepData.LastIndexOf("uniqueWeaponKillsPrecisionKills");
+                            wepend = wepData.IndexOf("displayValue", Tempwepend) + 15;
+                            Tempwepend = wepData.IndexOf("\"", wepend);
+                            string processedWepData = wepData.Substring(wepstart, Tempwepend - wepstart);
+
+                            matchPlayer.UsedWeapons = ProcessWeaponMeta(processedWepData, PGCR.ActivityRefID);
+                        }
+
+
+                        if (!RecentPlayerCompare.Contains(matchPlayer.MainAccountIdentifier))
+                        {
+                            if (matchPlayer.MainDisplayName != PlayerExclusion)
+                            {
+                                RecentPlayerCompare.Add(matchPlayer.MainAccountIdentifier);
+                                matchPlayer.LinkedMatches.Add(PGCR);
+                                matchPlayer.LinkedMatchTimes.Add(PGCR.ActivityStart);
+                                RecentPlayers.Add(matchPlayer);
                             }
                         }
+                        else
+                        {
+                            foreach (Guardian g in RecentPlayers)
+                            {
+                                if (g.MainAccountIdentifier == matchPlayer.MainAccountIdentifier)
+                                {
+                                    g.LinkedMatches.Add(PGCR);
+                                    g.LinkedMatchTimes.Add(PGCR.ActivityStart);
+                                }
+                            }
+                        }
+
+                    }
+                    PGCR.ActivityPlayers = matchPlayers;
+
+                    _TheaterClientEvent?.Invoke(PGCR, ClientEventType.SingleCarnageComplete);
+
+                    ReportsLoaded += 1;
+
+                    RecentMatches.Add(PGCR);
+                    System.Diagnostics.Debug.Print("match " + ReportsLoaded + "/" + ReportsToLoad);
+
+                    if (ReportsLoaded == ReportsToLoad)
+                    {
+                        System.Diagnostics.Debug.Print("All matches loaded");
+                        RecentMatches.Sort((x, y) => y.ActivityStart.CompareTo(x.ActivityStart));
+
+                        _TheaterClientEvent?.Invoke(PGCR, ClientEventType.AllCarnageComplete);
+                        break;
                     }
 
+                    break;
                 }
-                PGCR.ActivityPlayers = matchPlayers;
+                catch (Exception ex) { ReportsLoaded += 1; System.Diagnostics.Debug.Print("Failed to load carnage reports : " + ex.Message); _TheaterClientEvent?.Invoke(ReportsLoaded, ClientEventType.SingleCarnageFail); break; }
 
-                _TheaterClientEvent?.Invoke(PGCR, ClientEventType.SingleCarnageComplete);
-
-                ReportsLoaded += 1;
-
-                RecentMatches.Add(PGCR);
-                System.Diagnostics.Debug.Print("match " + ReportsLoaded + "/" + ReportsToLoad);
-                if (ReportsLoaded == ReportsToLoad)
-                {
-                    RecentMatches.Sort((x, y) => y.ActivityStart.CompareTo(x.ActivityStart));
-                    _TheaterClientEvent?.Invoke(PGCR, ClientEventType.AllCarnageComplete);
-                }
             }
-            catch (Exception ex) { ReportsLoaded += 1; System.Diagnostics.Debug.Print("Failed to load carnage reports : " + ex.Message); _TheaterClientEvent?.Invoke(ReportsLoaded, ClientEventType.SingleCarnageFail); }
+
+            if(CancelAction)
+            {
+                _TheaterClientEvent?.Invoke(this, ClientEventType.CancelAll);
+            }
         }
 
 
