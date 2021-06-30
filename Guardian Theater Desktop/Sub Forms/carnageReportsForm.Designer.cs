@@ -110,6 +110,7 @@ namespace Guardian_Theater_Desktop
             this.buttonExportStreams.TabIndex = 6;
             this.buttonExportStreams.Text = "Export Streams";
             this.buttonExportStreams.UseVisualStyleBackColor = false;
+            this.buttonExportStreams.Click += new System.EventHandler(this.buttonExportStreams_Click);
             // 
             // buttonRefreshMatches
             // 
