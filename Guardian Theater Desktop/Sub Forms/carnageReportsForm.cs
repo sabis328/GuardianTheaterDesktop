@@ -148,6 +148,7 @@ namespace Guardian_Theater_Desktop
                     { TwitchLinkedGuardians.Add((Guardian)sender); }
                     if(playersChecked == playersToCheck)
                     {
+                        System.Diagnostics.Debug.Print("All players loaded" + "\n_________________________________________________________________");
                         ProcessRecentPlayerList();
                     }
                     break;
@@ -156,6 +157,7 @@ namespace Guardian_Theater_Desktop
                     SetStatusMessage("Checking players for linked twitch accounts " + playersChecked + "/" + CarnageClient.RecentPlayers.Count, 1, 0);
                     if (playersChecked == playersToCheck)
                     {
+                        System.Diagnostics.Debug.Print("All players loaded" + "\n_________________________________________________________________");
                         ProcessRecentPlayerList();
                     }
                     break;
@@ -427,9 +429,7 @@ namespace Guardian_Theater_Desktop
                                                 if (CheckAgainst.Ticks > vod.videoCreated.Ticks && CheckAgainst.Ticks < AccountforDuration.Ticks)
                                                 {
                                                     System.Diagnostics.Debug.Print("MATCH FOUND  " + linkedGuardian.MainDisplayName + "    " + vod.videoCreated.ToString());
-                                                    //System.Diagnostics.Debug.Print("Game at : " + CheckAgainst.ToString());
-                                                   //System.Diagnostics.Debug.Print("Video at : " + vod.videoCreated.ToString());
-                                                   // System.Diagnostics.Debug.Print("Video Duration : " + vod.videoDuration.ToString());
+                                                  
 
                                                     TimeSpan offset = CheckAgainst.TimeOfDay - vod.videoCreated.TimeOfDay;
 
@@ -498,12 +498,69 @@ namespace Guardian_Theater_Desktop
                 { ResetStreamTree(streamers); });
                 return;
             }
-
+            List<DateTime> MatchedTimes = new List<DateTime>();
             treeviewStreamList.Nodes.Clear();
             foreach(TreeNode streamerNode in streamers)
             {
-                treeviewStreamList.Nodes.Add(streamerNode);
+                //treeviewStreamList.Nodes.Add(streamerNode);
+                //Sort by date and time here and sub match date and time here
+                //lRecentMatches.Sort((x, y) => y.ActivityStart.CompareTo(x.ActivityStart));
+                //Create a list of dates for each streamer, sort the sub dates, then sort the main streamers by sub date[0]
+                if (streamerNode.Nodes.Count > 1)
+                {
+                   
+                    List<TreeNode> SubMatches = new List<TreeNode>();
+                    List<DateTime> SubMatchTimes = new List<DateTime>();
+                    foreach (TreeNode linkNode in streamerNode.Nodes)
+                    {
+                        SubMatchTimes.Add(Convert.ToDateTime(linkNode.Nodes[0].Text));
+                        
+                    }
+
+                    SubMatchTimes.Sort((x, y) => y.CompareTo(x));
+                    foreach (DateTime matchCompare in SubMatchTimes)
+                    {
+                        foreach (TreeNode readd in streamerNode.Nodes)
+                        {
+                            if (readd.Nodes[0].Text == matchCompare.ToString())
+                            {
+                                SubMatches.Add(readd);
+                            }
+                        }
+                    }
+
+                    streamerNode.Nodes.Clear();
+                    foreach(TreeNode addTo in SubMatches)
+                    {
+                        streamerNode.Nodes.Add(addTo);
+                    }
+
+                    MatchedTimes.Add(Convert.ToDateTime(streamerNode.Nodes[0].Nodes[0].Text));
+                }
+                else
+                {
+                    MatchedTimes.Add(Convert.ToDateTime(streamerNode.Nodes[0].Nodes[0].Text));
+                }
+
             }
+            MatchedTimes.Sort((x, y) => y.CompareTo(x));
+            //Reorder all streamerNodes
+
+            List<TreeNode> reAddStreams = new List<TreeNode>();
+            foreach (DateTime compareTo in MatchedTimes)
+            {
+                foreach (TreeNode streamerNode in streamers)
+                {
+                    //System.Diagnostics.Debug.Print("Comparing time " + streamerNode.Nodes[0].Nodes[0])
+                    if (streamerNode.Nodes[0].Nodes[0].Text == compareTo.ToString() && !reAddStreams.Contains(streamerNode))
+                    {
+                        reAddStreams.Add(streamerNode);
+                    }
+                }
+            }
+
+            foreach(TreeNode stream in reAddStreams)
+            { treeviewStreamList.Nodes.Add(stream);  }
 
             StreamHeader.Text = "Streams Found : " + treeviewStreamList.Nodes.Count;
         }

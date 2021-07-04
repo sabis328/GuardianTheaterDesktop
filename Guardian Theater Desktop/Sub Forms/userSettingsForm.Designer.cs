@@ -46,6 +46,7 @@ namespace Guardian_Theater_Desktop
             this.label6 = new System.Windows.Forms.Label();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.label7 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // bungiekeybox
@@ -229,12 +230,25 @@ namespace Guardian_Theater_Desktop
             this.label7.Text = "Save last loaded guardian";
             this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // label8
+            // 
+            this.label8.BackColor = System.Drawing.Color.Transparent;
+            this.label8.Font = new System.Drawing.Font("Microsoft YaHei", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.ForeColor = System.Drawing.Color.White;
+            this.label8.Location = new System.Drawing.Point(148, -3);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(435, 30);
+            this.label8.TabIndex = 21;
+            this.label8.Text = "Please input your own keys to ensure proper function";
+            this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // userSettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(50)))), ((int)(((byte)(56)))));
             this.ClientSize = new System.Drawing.Size(748, 570);
+            this.Controls.Add(this.label8);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.label6);
@@ -278,5 +292,6 @@ namespace Guardian_Theater_Desktop
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label8;
     }
 }

@@ -270,10 +270,7 @@ namespace Guardian_Theater_Desktop
                         _TheaterClientEvent?.Invoke(inputAccount, ClientEventType.CheckLinkedAccountsFail);
                         break;
                     }
-                    if (failCount > 0)
-                    {
-                        System.Threading.Thread.Sleep(1000);
-                    }
+                   
                     try
                     {
 
@@ -345,15 +342,13 @@ namespace Guardian_Theater_Desktop
                     catch (Exception ex)
                     {
 
-                        failCount += 1;
-                        LoadLinkedAccounts(inputAccount, false, failCount);
+                        _TheaterClientEvent?.Invoke(this, ClientEventType.CheckLinkedAccountsFail);
                         
                     }
                 }
             }
             if (CancelAction)
             {
-
                 _TheaterClientEvent?.Invoke(this, ClientEventType.CancelAll);
             }
         }

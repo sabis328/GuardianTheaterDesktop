@@ -25,7 +25,7 @@ namespace Guardian_Theater_Desktop.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("abvhdv9zyqhefmnbjz3fljxx3hpc7u")]
+        [global::System.Configuration.DefaultSettingValueAttribute("1wzuadqgp6m36f19kmjsan2iaawh3b")]
         public string TwitchKey {
             get {
                 return ((string)(this["TwitchKey"]));
@@ -37,7 +37,7 @@ namespace Guardian_Theater_Desktop.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("h7bled1w6wracl3bytlhqwra3d7pr8")]
+        [global::System.Configuration.DefaultSettingValueAttribute("kig875kgkj9583dv395mfdu8bj5dfv")]
         public string TwitchSecret {
             get {
                 return ((string)(this["TwitchSecret"]));
@@ -49,7 +49,7 @@ namespace Guardian_Theater_Desktop.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("9efe9b8eba3042afb081121d447fd981")]
+        [global::System.Configuration.DefaultSettingValueAttribute("efba3bdfd53947eda413bb04c972db14")]
         public string BungieKey {
             get {
                 return ((string)(this["BungieKey"]));

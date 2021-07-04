@@ -3,13 +3,13 @@
   <Profiles />
   <Settings>
     <Setting Name="TwitchKey" Type="System.String" Scope="User">
-      <Value Profile="(Default)">abvhdv9zyqhefmnbjz3fljxx3hpc7u</Value>
+      <Value Profile="(Default)">1wzuadqgp6m36f19kmjsan2iaawh3b</Value>
     </Setting>
     <Setting Name="TwitchSecret" Type="System.String" Scope="User">
-      <Value Profile="(Default)">h7bled1w6wracl3bytlhqwra3d7pr8</Value>
+      <Value Profile="(Default)">kig875kgkj9583dv395mfdu8bj5dfv</Value>
     </Setting>
     <Setting Name="BungieKey" Type="System.String" Scope="User">
-      <Value Profile="(Default)">9efe9b8eba3042afb081121d447fd981</Value>
+      <Value Profile="(Default)">efba3bdfd53947eda413bb04c972db14</Value>
     </Setting>
     <Setting Name="MenuIndicatorColor" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)">81, 0, 122</Value>
