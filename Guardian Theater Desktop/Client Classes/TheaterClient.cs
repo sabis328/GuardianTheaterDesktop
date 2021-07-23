@@ -639,6 +639,8 @@ namespace Guardian_Theater_Desktop
         public List<CarnageReport> LinkedMatches { get; set; }
 
         public bool HasTwitch { get; set; }
+
+        public bool liveNow { get; set; }
         public string TwitchName { get; set; }
 
         public string MainDisplayName { get; set; }
@@ -651,6 +653,7 @@ namespace Guardian_Theater_Desktop
             LinkedAccounts = new List<BungieAccount>();
 
             HasTwitch = false;
+            liveNow = false;
             if (resetMatches)
             {
                 LinkedMatchTimes = new List<DateTime>();

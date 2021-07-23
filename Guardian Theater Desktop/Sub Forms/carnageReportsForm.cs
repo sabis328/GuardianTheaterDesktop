@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
+using System.IO;
 
 namespace Guardian_Theater_Desktop
 {
@@ -186,6 +187,7 @@ namespace Guardian_Theater_Desktop
                     MatchNode.Nodes.Add(PGCR.ActivityStart.ToString());
                     MatchNode.Nodes.Add("Game hash :" + PGCR.ActivityHash);
                     MatchNode.Nodes.Add("Location hash :" + PGCR.LocationHash);
+                    MatchNode.Tag = PGCR;
 
                     foreach (Guardian player in PGCR.ActivityPlayers)
                     {
@@ -408,6 +410,10 @@ namespace Guardian_Theater_Desktop
                                 TwitchCreator possibleStreaamer = vodClient.Found_Channels[0];
                                 vodClient.Load_Channel_Videos(possibleStreaamer);
 
+                                linkedGuardian.liveNow = possibleStreaamer.Live_Now;
+
+                                System.Diagnostics.Debug.Print("user " + possibleStreaamer.Username + " is live : " + linkedGuardian.liveNow.ToString());
+
                                 if (possibleStreaamer.Channel_Saved_Videos != null && possibleStreaamer.Channel_Saved_Videos.Count > 0)
                                 {
 
@@ -563,6 +569,56 @@ namespace Guardian_Theater_Desktop
             { treeviewStreamList.Nodes.Add(stream);  }
 
             StreamHeader.Text = "Streams Found : " + treeviewStreamList.Nodes.Count;
+
+
+            //Additional Loop here to run through and show if somebody is pressently live, indicating that somebody might have streamed this match
+            List<Guardian> CurrentLive = new List<Guardian>();
+            foreach (Guardian g in TwitchLinkedGuardians)
+            {
+                if(g.liveNow)
+                {
+                    CurrentLive.Add(g);
+                    
+                }
+            }
+
+            foreach(Guardian g in CurrentLive)
+            {
+                System.Diagnostics.Debug.Print("Live user ; " + g.MainDisplayName);
+
+            }
+            foreach(TreeNode matchNode in treeviewCarnageList.Nodes)
+            {
+                System.Diagnostics.Debug.Print("Checking match : " + matchNode.Text);
+                //CarnageReport pgcr = (CarnageReport)matchNode.Tag;
+                bool foundLive = false;
+                foreach(TreeNode matchSubNodes in matchNode.Nodes)
+                {
+                    foreach(Guardian g in CurrentLive)
+                    {
+                        if (matchSubNodes.Text.ToLower() == g.MainDisplayName.ToLower())
+                        {
+                            //System.Diagnostics.Debug.Print(matchNode.Text + " Contained user : " + g.MainDisplayName);
+                            foundLive = true;
+                            //System.Diagnostics.Debug.Print("updating node colors");
+                            matchSubNodes.BackColor = Color.LimeGreen;
+                            matchSubNodes.ForeColor = Color.Black;
+                                
+                        }
+                        
+                    }
+                    
+                    
+                }
+                if(foundLive)
+                {
+                    matchNode.Text += " : a user from this match is currently live";
+                    //matchNode.BackColor = Color.Yellow;
+                }
+            }
+
+            treeviewCarnageList.Update();
+             
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -682,7 +738,28 @@ namespace Guardian_Theater_Desktop
 
         private void buttonExportStreams_Click(object sender, EventArgs e)
         {
+            if (treeviewStreamList.Nodes.Count > 0)
+            {
+                string StreamList = "";
+                foreach (TreeNode streamHeader in treeviewStreamList.Nodes)
+                {
+                    StreamList += streamHeader.Text + "\n\n";
+                    foreach (TreeNode streamText in streamHeader.Nodes)
+                    {
+                        StreamList += streamText.Text + "\n" + streamText.Nodes[0].Text + "\n" + streamText.Nodes[1].Text + "\n\n";
+                    }
+                }
 
+                string path = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+                string ticks = Environment.TickCount.ToString();
+                path += "\\" + ticks + ".txt";
+
+                StreamWriter sw = new StreamWriter(path);
+                sw.WriteLine(StreamList);
+                sw.Close();
+
+                System.Diagnostics.Process.Start(path);
+            }
         }
     }
 }
