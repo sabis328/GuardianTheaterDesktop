@@ -3499,7 +3499,7 @@ namespace Guardian_Theater_Desktop
                 int kills = Convert.ToInt32(WeaponKills);
                 int ratio = Convert.ToInt32(WeaponPrecisionRatio.Replace("%", ""));
 
-                if(kills > 10 && ratio > 90)
+                if(kills > 7 && ratio > 90)
                 {
                     Suspected = true;
                 }
