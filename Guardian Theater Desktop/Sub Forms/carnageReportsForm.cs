@@ -282,14 +282,14 @@ namespace Guardian_Theater_Desktop
 
             foreach(Guardian player in RecentPlayersQueue)
             {
-                foreach(Guardian.BungieAccount bacc in player.LinkedAccounts)
-                {
-                    if (!player.HasTwitch)
+               
+                    foreach (Guardian.BungieAccount bacc in player.LinkedAccounts)
                     {
+
                         if (bacc.UserType == Guardian.BungieAccount.AccountType.Steam)
                         {
                             if (bacc.DisplayName.ToLower().Trim().Contains("twtich.tv/") || bacc.DisplayName.ToLower().Trim().Contains("twitch/") || bacc.DisplayName.ToLower().Trim().Contains("ttv") || bacc.DisplayName.ToLower().Trim().Contains("ttv/") || bacc.DisplayName.ToLower().Trim().Contains("ttvbtw")
-                               || bacc.DisplayName.ToLower().Trim().Contains("twitch-") || bacc.DisplayName.ToLower().Trim().Contains("ttv.")|| bacc.DisplayName.ToLower().Trim().Contains("t.tv") || bacc.DisplayName.ToLower().Trim().Contains("live") || bacc.DisplayName.ToLower().Trim().Contains("twitch_") || bacc.DisplayName.ToLower().Trim().Contains("twitch"))
+                               || bacc.DisplayName.ToLower().Trim().Contains("twitch-") || bacc.DisplayName.ToLower().Trim().Contains("ttv.") || bacc.DisplayName.ToLower().Trim().Contains("t.tv") || bacc.DisplayName.ToLower().Trim().Contains("live") || bacc.DisplayName.ToLower().Trim().Contains("twitch_") || bacc.DisplayName.ToLower().Trim().Contains("twitch"))
                             {
                                 System.Diagnostics.Debug.Print("Matched a pattern name : " + bacc.DisplayName);
 
@@ -305,21 +305,45 @@ namespace Guardian_Theater_Desktop
                                 tempName = tempName.Replace("ttv/", " ");
                                 tempName = tempName.Replace("ttv.", " ");
                                 tempName = tempName.Replace("(btw)", " ");
-                                
+
 
                                 tempName = tempName.Trim();
                                 tempName = Regex.Replace(tempName, "[^a-zA-Z0-9 _]", string.Empty);
 
+                                player.AlternateTwitch = tempName;
 
-                                player.TwitchName = tempName;
+                            if (player.HasTwitch)
+                            {
 
+                                System.Diagnostics.Debug.Print("Comparing current linked twitch to steam twitch \n " + player.TwitchName + " : " + player.AlternateTwitch);
+                                if (!player.TwitchName.ToLower().Contains(player.AlternateTwitch.ToLower()))
+                                {
+                                    System.Diagnostics.Debug.Print("Possible alternate twitch found");
+
+                                    Guardian playerAlt = new Guardian();
+                                    playerAlt.MainDisplayName = player.MainDisplayName;
+                                    playerAlt.LinkedMatchTimes = player.LinkedMatchTimes;
+                                    playerAlt.LinkedMatches = player.LinkedMatches;
+
+                                    playerAlt.TwitchName = tempName;
+                                    playerAlt.HasTwitch = true;
+                                    TwitchLinkedGuardians.Add(playerAlt);
+                                }
+
+                            }
+                            else
+                            {
+                                player.TwitchName = player.AlternateTwitch;
                                 System.Diagnostics.Debug.Print("Corrected name to : " + player.TwitchName);
                                 TwitchLinkedGuardians.Add(player);
+                            }
                                 break;
                             }
                         }
+
+
                     }
-                }
+               
             }
 
             //Awful nested loops to re-add all the player data to existing player nodes

@@ -642,7 +642,9 @@ namespace Guardian_Theater_Desktop
 
         public bool liveNow { get; set; }
         public string TwitchName { get; set; }
+        public string AlternateTwitch { get; set; }
 
+        public bool HasALt { get; set; }
         public string MainDisplayName { get; set; }
         public BungieAccount.AccountType MainType { get; set; }
 
