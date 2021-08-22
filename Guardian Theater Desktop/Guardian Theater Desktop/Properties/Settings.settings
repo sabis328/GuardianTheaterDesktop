@@ -1,7 +1,45 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)">
-  <Profiles>
-    <Profile Name="(Default)" />
-  </Profiles>
-  <Settings />
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Guardian_Theater_Desktop.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="TwitchKey" Type="System.String" Scope="User">
+      <Value Profile="(Default)">1wzuadqgp6m36f19kmjsan2iaawh3b</Value>
+    </Setting>
+    <Setting Name="TwitchSecret" Type="System.String" Scope="User">
+      <Value Profile="(Default)">kig875kgkj9583dv395mfdu8bj5dfv</Value>
+    </Setting>
+    <Setting Name="BungieKey" Type="System.String" Scope="User">
+      <Value Profile="(Default)">efba3bdfd53947eda413bb04c972db14</Value>
+    </Setting>
+    <Setting Name="MenuIndicatorColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">81, 0, 122</Value>
+    </Setting>
+    <Setting Name="SelectedCharacterColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">White</Value>
+    </Setting>
+    <Setting Name="HeaderFooterColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">81, 0, 122</Value>
+    </Setting>
+    <Setting Name="MyAccountMainID" Type="System.String" Scope="User">
+      <Value Profile="(Default)">null</Value>
+    </Setting>
+    <Setting Name="MyAccountMainType" Type="System.String" Scope="User">
+      <Value Profile="(Default)">null</Value>
+    </Setting>
+    <Setting Name="MyAccountDisplayName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">null</Value>
+    </Setting>
+    <Setting Name="MyAccountLastCharacterIdentifier" Type="System.String" Scope="User">
+      <Value Profile="(Default)">null</Value>
+    </Setting>
+    <Setting Name="SaveLastSearch" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="ReportCounter" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">5</Value>
+    </Setting>
+    <Setting Name="AlternateAccount" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>
