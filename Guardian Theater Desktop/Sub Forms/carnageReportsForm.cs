@@ -471,7 +471,31 @@ namespace Guardian_Theater_Desktop
                                                         System.Diagnostics.Debug.Print("Corrected Negative offset : " + offset.ToString());
                                                     }
 
-                                                    string twitchLink = vod.videoLink + "?t=" + offset.Hours + "h" + offset.Minutes + "m" + offset.Seconds + "s";
+
+                                                    string twitchLink = "http://www.twitch.tv"; 
+
+                                                    if (vod.videoDuration.ToString().Contains("."))
+                                                    {
+                                                        int Voddays = 0;
+                                                        
+                                                        string[] daySplit = vod.videoDuration.ToString().Split('.');
+                                                        
+                                                        Voddays = Convert.ToInt32(daySplit[0].ToString());
+                                                        
+                                                        Voddays *= 24;
+
+                                                        Voddays += offset.Hours;
+
+                                                        twitchLink = vod.videoLink + "?t=" + Voddays.ToString() + "h" + offset.Minutes + "m" + offset.Seconds + "s";
+
+                                                    }
+                                                    else
+                                                    {
+                                                       twitchLink = vod.videoLink + "?t=" + offset.Hours + "h" + offset.Minutes + "m" + offset.Seconds + "s";
+                                                    }
+
+                                                   
+                                                    
 
                                                     System.Diagnostics.Debug.Print("ADDING MATCH NODE : for " + linkedGuardian.MainDisplayName + " | linked matches found : " + linkedGuardian.LinkedMatches.Count.ToString() + " on match : " + i.ToString());
                                                     TreeNode twitchNode = new TreeNode(twitchLink);

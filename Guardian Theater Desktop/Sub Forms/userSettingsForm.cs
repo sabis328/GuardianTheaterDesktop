@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace Guardian_Theater_Desktop
 {
@@ -33,14 +34,70 @@ namespace Guardian_Theater_Desktop
             parent.BungieKey = bungiekeybox.Text;
             parent.TwitchKey = twitchclientkeybox.Text;
             parent.TwitchAuth = twitchsecretkeybox.Text;
+
+
+            CheckCustomKeys(parent);
         }
 
+
+        public void CheckCustomKeys(MainForm parent)
+        {
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            path += "\\" + "GTKeys.txt";
+
+            if (File.Exists(path))
+            {
+                StreamReader sr = new StreamReader(path);
+                //Twitch Key | Twitch Secret | Bungie Key
+
+                string TwitchKey = sr.ReadLine();
+                string TwitchSecret = sr.ReadLine();
+                string BungieKey = sr.ReadLine();
+
+                Properties.Settings.Default.BungieKey = BungieKey;
+                Properties.Settings.Default.TwitchSecret = TwitchSecret;
+                Properties.Settings.Default.TwitchKey = TwitchKey;
+                Properties.Settings.Default.Save();
+
+                bungiekeybox.Text = BungieKey;
+                twitchsecretkeybox.Text = TwitchSecret;
+                twitchclientkeybox.Text = TwitchKey;
+
+                parent.BungieKey = bungiekeybox.Text;
+                parent.TwitchKey = twitchclientkeybox.Text;
+                parent.TwitchAuth = twitchsecretkeybox.Text;
+            }
+        }
         private void button1_Click(object sender, EventArgs e)
         {
             Properties.Settings.Default.TwitchKey = twitchclientkeybox.Text;
             Properties.Settings.Default.TwitchSecret = twitchsecretkeybox.Text;
             Properties.Settings.Default.BungieKey = bungiekeybox.Text;
             Properties.Settings.Default.Save();
+
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            path += "\\" +  "GTKeys.txt";
+            bool canWrite = true;
+            if (File.Exists(path))
+            {
+                try
+                {
+                    File.WriteAllText(path,"");
+                    
+                }
+                catch { canWrite = false; }
+            }
+
+            if (canWrite)
+            {
+                StreamWriter sw = new StreamWriter(path);
+                sw.WriteLine(Properties.Settings.Default.TwitchKey);
+                sw.WriteLine(Properties.Settings.Default.TwitchSecret);
+                sw.WriteLine(Properties.Settings.Default.BungieKey);
+                sw.Close();
+
+                System.Diagnostics.Process.Start(path);
+            }
         }
 
         

@@ -1,6 +1,7 @@
 F:\Coding Projects\Guardian Theater Desktop\bin\Debug\Guardian Theater Desktop.exe.config
 F:\Coding Projects\Guardian Theater Desktop\bin\Debug\Guardian Theater Desktop.exe
 F:\Coding Projects\Guardian Theater Desktop\bin\Debug\Guardian Theater Desktop.pdb
+F:\Coding Projects\Guardian Theater Desktop\obj\Debug\Guardian_Theater_Desktop.Form1.resources
 F:\Coding Projects\Guardian Theater Desktop\obj\Debug\Guardian_Theater_Desktop.Properties.Resources.resources
 F:\Coding Projects\Guardian Theater Desktop\obj\Debug\Guardian Theater Desktop.csproj.GenerateResource.cache
 F:\Coding Projects\Guardian Theater Desktop\obj\Debug\Guardian Theater Desktop.csproj.CoreCompileInputs.cache
@@ -16,7 +17,3 @@ C:\Users\abis3\OneDrive\Desktop\Guardian Theater Desktop\obj\Debug\Guardian Thea
 C:\Users\abis3\OneDrive\Desktop\Guardian Theater Desktop\obj\Debug\Guardian Theater Desktop.csproj.CoreCompileInputs.cache
 C:\Users\abis3\OneDrive\Desktop\Guardian Theater Desktop\obj\Debug\Guardian Theater Desktop.exe
 C:\Users\abis3\OneDrive\Desktop\Guardian Theater Desktop\obj\Debug\Guardian Theater Desktop.pdb
-F:\Coding Projects\Guardian Theater Desktop\obj\Debug\Guardian_Theater_Desktop.guardianSearchForm.resources
-F:\Coding Projects\Guardian Theater Desktop\obj\Debug\Guardian_Theater_Desktop.MainForm.resources
-F:\Coding Projects\Guardian Theater Desktop\obj\Debug\Guardian_Theater_Desktop.userSettingsForm.resources
-F:\Coding Projects\Guardian Theater Desktop\obj\Debug\Guardian_Theater_Desktop.carnageReportsForm.resources

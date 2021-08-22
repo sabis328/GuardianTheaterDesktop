@@ -65,11 +65,11 @@ namespace Guardian_Theater_Desktop
             this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button1.Font = new System.Drawing.Font("Microsoft YaHei", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button1.ForeColor = System.Drawing.Color.White;
-            this.button1.Location = new System.Drawing.Point(272, 244);
+            this.button1.Location = new System.Drawing.Point(264, 245);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(190, 34);
+            this.button1.Size = new System.Drawing.Size(205, 34);
             this.button1.TabIndex = 5;
-            this.button1.Text = "Save Keys";
+            this.button1.Text = "Save and Exoport Keys";
             this.button1.UseVisualStyleBackColor = false;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
@@ -223,9 +223,9 @@ namespace Guardian_Theater_Desktop
             this.label7.BackColor = System.Drawing.Color.Transparent;
             this.label7.Font = new System.Drawing.Font("Microsoft YaHei", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label7.ForeColor = System.Drawing.Color.White;
-            this.label7.Location = new System.Drawing.Point(268, 306);
+            this.label7.Location = new System.Drawing.Point(260, 306);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(166, 36);
+            this.label7.Size = new System.Drawing.Size(174, 36);
             this.label7.TabIndex = 20;
             this.label7.Text = "Save last loaded guardian";
             this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;

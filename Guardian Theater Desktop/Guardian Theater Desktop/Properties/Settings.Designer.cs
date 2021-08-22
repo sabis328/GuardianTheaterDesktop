@@ -8,174 +8,21 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Guardian_Theater_Desktop.Properties {
-    
-    
+
+namespace Guardian_Theater_Desktop.Properties
+{
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.8.1.0")]
-    internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
-        
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "11.0.0.0")]
+    internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase
+    {
+
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
-        
-        public static Settings Default {
-            get {
+
+        public static Settings Default
+        {
+            get
+            {
                 return defaultInstance;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1wzuadqgp6m36f19kmjsan2iaawh3b")]
-        public string TwitchKey {
-            get {
-                return ((string)(this["TwitchKey"]));
-            }
-            set {
-                this["TwitchKey"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("kig875kgkj9583dv395mfdu8bj5dfv")]
-        public string TwitchSecret {
-            get {
-                return ((string)(this["TwitchSecret"]));
-            }
-            set {
-                this["TwitchSecret"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("efba3bdfd53947eda413bb04c972db14")]
-        public string BungieKey {
-            get {
-                return ((string)(this["BungieKey"]));
-            }
-            set {
-                this["BungieKey"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("81, 0, 122")]
-        public global::System.Drawing.Color MenuIndicatorColor {
-            get {
-                return ((global::System.Drawing.Color)(this["MenuIndicatorColor"]));
-            }
-            set {
-                this["MenuIndicatorColor"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("White")]
-        public global::System.Drawing.Color SelectedCharacterColor {
-            get {
-                return ((global::System.Drawing.Color)(this["SelectedCharacterColor"]));
-            }
-            set {
-                this["SelectedCharacterColor"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("81, 0, 122")]
-        public global::System.Drawing.Color HeaderFooterColor {
-            get {
-                return ((global::System.Drawing.Color)(this["HeaderFooterColor"]));
-            }
-            set {
-                this["HeaderFooterColor"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("null")]
-        public string MyAccountMainID {
-            get {
-                return ((string)(this["MyAccountMainID"]));
-            }
-            set {
-                this["MyAccountMainID"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("null")]
-        public string MyAccountMainType {
-            get {
-                return ((string)(this["MyAccountMainType"]));
-            }
-            set {
-                this["MyAccountMainType"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("null")]
-        public string MyAccountDisplayName {
-            get {
-                return ((string)(this["MyAccountDisplayName"]));
-            }
-            set {
-                this["MyAccountDisplayName"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("null")]
-        public string MyAccountLastCharacterIdentifier {
-            get {
-                return ((string)(this["MyAccountLastCharacterIdentifier"]));
-            }
-            set {
-                this["MyAccountLastCharacterIdentifier"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool SaveLastSearch {
-            get {
-                return ((bool)(this["SaveLastSearch"]));
-            }
-            set {
-                this["SaveLastSearch"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("5")]
-        public int ReportCounter {
-            get {
-                return ((int)(this["ReportCounter"]));
-            }
-            set {
-                this["ReportCounter"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool AlternateAccount {
-            get {
-                return ((bool)(this["AlternateAccount"]));
-            }
-            set {
-                this["AlternateAccount"] = value;
             }
         }
     }
