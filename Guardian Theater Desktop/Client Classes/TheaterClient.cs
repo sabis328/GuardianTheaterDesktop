@@ -239,6 +239,7 @@ namespace Guardian_Theater_Desktop
                     }
                     catch (Exception ex)
                     {
+                        System.Diagnostics.Debug.Print("Error in character loading for : " + inputAccount.MainDisplayName);
                         InProgress = false;
                         _TheaterClientEvent?.Invoke(inputAccount, ClientEventType.CharactersFail);
                         break;
@@ -293,6 +294,8 @@ namespace Guardian_Theater_Desktop
 
                         }
 
+
+                        System.Diagnostics.Debug.Print(responseBody);
                         inputAccount.LinkedAccounts = new List<Guardian.BungieAccount>();
                         inputAccount.ProcessPlayerInformation(responseBody, fromPlayerSearch);
 
@@ -303,8 +306,8 @@ namespace Guardian_Theater_Desktop
 
                                 if (bacc.UserType == Guardian.BungieAccount.AccountType.BNET)
                                 {
-                                    //System.Diagnostics.Debug.Print("Checking " + bacc.DisplayName + " for hard linked twitch");
-                                    _client = (HttpWebRequest)WebRequest.Create(string.Format("https://www.bungie.net/en/Profile/254/{0}{1}", bacc.AccountIdentifier, "/", Uri.EscapeDataString(bacc.DisplayName)));
+                                    System.Diagnostics.Debug.Print("Checking " + bacc.DisplayName + " for hard linked twitch");
+                                    _client = (HttpWebRequest)WebRequest.Create(string.Format("https://www.bungie.net/en/Profile/254/{0}{1}", bacc.AccountIdentifier, "/", Uri.EscapeDataString(inputAccount.MainDisplayName)));
                                     requrl = _client.RequestUri.ToString();
                                     _client.Method = "GET";
                                     _client.Headers.Add("X-API-KEY", _BungieApiKey);
@@ -315,6 +318,9 @@ namespace Guardian_Theater_Desktop
                                         responseBody = new StreamReader(_subResponse.GetResponseStream()).ReadToEnd();
                                         _subResponse.Close();
                                     }
+                                    System.Diagnostics.Debug.Print(_client.RequestUri.ToString());
+                                    System.Diagnostics.Debug.Print(responseBody);
+                                    
                                     int start = responseBody.IndexOf("profiles-container", 0);
                                     int end = responseBody.IndexOf("reportClanProfileModal", start);
                                     responseBody = responseBody.Substring(start, end - start);
@@ -341,7 +347,7 @@ namespace Guardian_Theater_Desktop
                     }
                     catch (Exception ex)
                     {
-
+                        System.Diagnostics.Debug.Print("Error for : " + inputAccount.MainDisplayName + "  in linked account loading");
                         _TheaterClientEvent?.Invoke(this, ClientEventType.CheckLinkedAccountsFail);
                         
                     }
@@ -571,12 +577,12 @@ namespace Guardian_Theater_Desktop
 
         public List<Guardian.Weapon> ProcessWeaponMeta(string inputData, string LinkedMatchID)
         {
-            System.Diagnostics.Debug.Print("Weapon Data to parse: \n ----------------------------------------------------------------");
-            System.Diagnostics.Debug.Print(inputData);
+           
             List<Guardian.Weapon> playerWeps = new List<Guardian.Weapon>();
             
             int start = 0;
             int end = 0;
+
             int lastIndex = inputData.LastIndexOf("referenceId");
             if(lastIndex == 0)
             {
@@ -620,8 +626,7 @@ namespace Guardian_Theater_Desktop
 
                 playerWeps.Add(wep);
             }
-            System.Diagnostics.Debug.Print("----------------------------------------------------------------");
-
+            
             return playerWeps;
         }
 
@@ -704,6 +709,8 @@ namespace Guardian_Theater_Desktop
                 userAcc.DisplayName = inputData.Substring(start, end - start);
 
                 LinkedAccounts.Add(userAcc);
+
+               
             }
 
             if (LinkedAccounts.Count > 0)

@@ -339,10 +339,10 @@ namespace Guardian_Theater_Desktop
             this.FormContainerPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(50)))), ((int)(((byte)(56)))));
             this.FormContainerPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.FormContainerPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FormContainerPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.FormContainerPanel.Dock = System.Windows.Forms.DockStyle.Top;
             this.FormContainerPanel.Location = new System.Drawing.Point(264, 38);
             this.FormContainerPanel.Name = "FormContainerPanel";
-            this.FormContainerPanel.Size = new System.Drawing.Size(748, 570);
+            this.FormContainerPanel.Size = new System.Drawing.Size(748, 320);
             this.FormContainerPanel.TabIndex = 2;
             this.FormContainerPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.FormContainerPanel_Paint);
             // 
